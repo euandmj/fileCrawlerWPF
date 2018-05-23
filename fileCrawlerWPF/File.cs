@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NReco.VideoInfo;
+﻿using NReco.VideoInfo;
+using System;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace fileCrawlerWPF
 {
@@ -24,10 +21,13 @@ namespace fileCrawlerWPF
         private CodecInfo audioCodec;
         private string path;
         private long size;
+        private int index;
+        private byte[] hash; 
 
         public TimeSpan duration;
         public CodecInfo videoCodec;
 
+        public int Index { get { return index; } set { index = value; } }
         public string Name {  get { return name; } set { name = value; } }
         public int Duration { get { return duration.Minutes; }
             set
@@ -41,7 +41,7 @@ namespace fileCrawlerWPF
         public string VideoCodec { get { return videoCodec.codec; } }
         public string AudioCodec { get { return audioCodec.codec; } }
         public string Path { get { return path; } set { path = value; } }
-        public string FileSize
+        public string FileSize  
         {
             get
             {
@@ -49,13 +49,18 @@ namespace fileCrawlerWPF
                 //return size >= 1000000000 ? (size / 1024) / 1024 / 1024 + " GB" : size / 1024 + " MB";
             }
         }
-       
-        // encapsulate
-        // file size variable return
+        public string Hash { get { return hash?.ToString(); } }
+        public string HashAsHex {
+            get
+            {
+                return hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
+            }
+        }
 
-        public ProbeFile(string path, bool logToggle = false)
+        public ProbeFile(string path, int index, bool logToggle = false)
         {
             this.path = path;
+            this.index = index;
             isLoggingEnabled = logToggle;
 
             name = this.path.Substring(this.path.LastIndexOf('\\') + 1);
@@ -77,8 +82,8 @@ namespace fileCrawlerWPF
 
                 foreach (var stream in info.Streams)
                 {
-                    if(isLoggingEnabled) Console.WriteLine("Stream {0} ({1})", stream.CodecName, stream.CodecType);
-                   
+                    if (isLoggingEnabled) Console.WriteLine("Stream {0} ({1})", stream.CodecName, stream.CodecType);
+
 
                     if (stream.CodecType == "video")
                     {
@@ -90,21 +95,42 @@ namespace fileCrawlerWPF
                         height = stream.Height;
                         framerate = stream.FrameRate;
                     }
-                    else if(stream.CodecType == "audio")
+                    else if (stream.CodecType == "audio")
                     {
                         audioCodec.codec = stream.CodecName;
                         audioCodec.codecType = stream.CodecType;
                     }
                 }
                 if (isLoggingEnabled) Console.WriteLine("\n");
-            }catch(FileNotFoundException)
+            }
+            catch (FileNotFoundException)
             {
                 Console.WriteLine("Unable to locate the specific file. path is supplied as " + path);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-            }            
+            }
+            finally
+            {
+                // this increases load times by way too much. apply for an option in file information. 
+               // SetHash(); 
+            }
+        }
+
+        public void ComputeHash()
+        {
+            using (new WaitCursor())
+            {
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = File.OpenRead(path))
+                    {
+                        hash = md5.ComputeHash(stream);
+                    }
+                }
+            }
+            
         }
 
         public void PrintInfo()

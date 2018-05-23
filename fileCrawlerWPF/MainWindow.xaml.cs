@@ -1,34 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Drawing;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.IO;
-using System.Windows.Navigation;
-using Microsoft.WindowsAPICodePack;
-using System.Windows.Shapes;
-using System.Windows.Interop;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
 namespace fileCrawlerWPF
 {
+    struct ListViewItem
+    {
+        public int Index { get; set; }
+        public string Name { get; set; }
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         List<string> fileDirectories;
-        Dictionary<string, ProbeFile> fileDictionary;
-        List<ProbeFile> files;
+        Dictionary<int, ProbeFile> fileDictionary;
+        List<ProbeFile> filterFiles;
         
 
         // Alias for codec types. to be more flexible on the user
@@ -57,43 +53,57 @@ namespace fileCrawlerWPF
         public MainWindow()
         {
             InitializeComponent();
-            fileDictionary = new Dictionary<string, ProbeFile>();
+            fileDictionary = new Dictionary<int, ProbeFile>();
             fileDirectories = new List<string>();
+            
+            
+          
+
+ 
         }
 
         private void ScanBttn_Click(object sender, RoutedEventArgs e)
         {
+            
             var path = dirText.Text;
-           // var path = @"I:\Movies\TV\Game of Thrones\";
+            // var path = @"I:\Movies\TV\Rick and Morty";
 
             if (path == "")
                 return;
 
             fileDirectories.Clear();
+            fileDictionary.Clear();
             AllFilesListBox.Items.Clear();
+            previewHash.Clear(); 
+            previewHash.IsEnabled = false;
+            ClearSelectedFileInformation();
 
-
-
-            if (File.Exists(path))
+            using (new WaitCursor())
             {
-                fileDirectories.Add(path);
-            }
-            else if (Directory.Exists(path))
-            {
-                ProcessDirectory(path);
+                if (File.Exists(path))
+                {
+                    fileDirectories.Add(path);
+                }
+                else if (Directory.Exists(path))
+                {
+                    ProcessDirectory(path);
+                }
+
+                //files = new List<ProbeFile>();
+
+                foreach (string s in fileDirectories)
+                {
+                    // files.Add(new ProbeFile(s, fileDictionary.Count + 1));
+                    ProbeFile pf = new ProbeFile(s, fileDictionary.Count);
+
+                    if (pf.videoCodec.codecType == "video") fileDictionary.Add(pf.Index, pf);
+                }
             }
 
-            files = new List<ProbeFile>();
-
-            foreach(string s in fileDirectories)
-            {
-                files.Add(new ProbeFile(s));
-            }
-
-            CullNonVideoFiles();
+           // CullNonVideoFiles();
             UpdateAllFilesListBox();
 
-            totalFilesCount.Text = files.Count.ToString();
+            totalFilesCount.Text = fileDictionary.Count.ToString();
         }
 
         private void ProcessDirectory(string path)
@@ -116,8 +126,20 @@ namespace fileCrawlerWPF
         private void CullNonVideoFiles()
         {
             // removes all files which do not have a video file. 
-            files.RemoveAll(s => s.videoCodec.codecType != "video");
+            //files.RemoveAll(s => s.videoCodec.codecType != "video");
+
+            // work out which keys belong to non video files
+            var keys_to_remove = fileDictionary.Where(entry => entry.Value.videoCodec.codecType != "video")
+                                                               .Select(entry => entry.Key)
+                                                               .ToArray(); 
+
+            // remove the non-video entries from the dictionary. 
+            foreach(var k in keys_to_remove)
+            {
+                fileDictionary.Remove(k); 
+            }
             
+            // "update" the keys 
         }
 
         private void RemoveAll()
@@ -134,55 +156,78 @@ namespace fileCrawlerWPF
 
         private void UpdateAllFilesListBox()
         {
-            foreach(var f in files)
+            foreach(var dict in fileDictionary)
             {
-                AllFilesListBox.Items.Add(f.Name);
+                AllFilesListBox.Items.Add(new ListViewItem { Index = dict.Key, Name = dict.Value.Name });
             }
         }
 
         private void AllFilesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Cannot find a subtly working method for getting cell data from a data grid or listview. 
+            // SelectedItems[0].SubItems does not exist? 
+            // This method only works without user sorting which is a minus. 
+
             if (AllFilesListBox.SelectedIndex == -1) return;
+            
 
-            var current = AllFilesListBox.SelectedItem.ToString();
+            // Clear hash info. 
+            previewHash.Clear();
+            previewHash.IsEnabled = false;
 
-            foreach(var file in files)
-            {
-                if(file.Name == AllFilesListBox.SelectedItem.ToString())
-                {
-                    UpdateSelectedFile(file);
-                }
-            }
-        }
+            int index = AllFilesListBox.SelectedIndex;
 
-        private void UpdateSelectedFile(ProbeFile file)
-        {            
-            previewName.Text = file.Name;
-            previewPath.Text = file.Path;
-            previewResol.Text = file.Width + "x" + file.Height;
-            previewFPS.Text = file.FrameRate.ToString();
-            previewVidCodec.Text = file.VideoCodec;
-            previewAudioCodec.Text = file.AudioCodec;
-            previewFileSize.Text = file.FileSize;
+            previewName.Text = fileDictionary[index].Name;
+            previewPath.Text = fileDictionary[index].Path;
+            previewResol.Text = fileDictionary[index].Width + "x" + fileDictionary[index].Height;
+            previewFPS.Text = fileDictionary[index].FrameRate.ToString();
+            previewVidCodec.Text = fileDictionary[index].VideoCodec;
+            previewAudioCodec.Text = fileDictionary[index].AudioCodec;
+            previewFileSize.Text = fileDictionary[index].FileSize;
 
-            Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(file.Path);
+            Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(fileDictionary[index].Path);
             Bitmap bmp = imgfile.Thumbnail.ExtraLargeBitmap;
             thumbnail.Source = BitmapToBitmapImage(bmp);
         }
 
-        private void UpdateFilteredPreview(ProbeFile file)
+        private void ClearSelectedFileInformation()
         {
-            previewName_Copy.Text = file.Name;
-            previewPath_Copy.Text = file.Path;
-            previewResol_Copy.Text = file.Width + "x" + file.Height;
-            previewFPS_Copy.Text = file.FrameRate.ToString();
-            previewVidCodec_Copy.Text = file.VideoCodec;
-            previewAudioCodec_Copy.Text = file.AudioCodec;
-            previewFileSize_Copy.Text = file.FileSize;
+            previewName.Clear();
+            previewPath.Clear();
+            previewResol.Clear();
+            previewFPS.Clear();
+            previewVidCodec.Clear();
+            previewAudioCodec.Clear();
+            previewFileSize.Clear();
+            thumbnail.Source = null;
+        }
 
-            Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(file.Path);
-            Bitmap bmp = imgfile.Thumbnail.ExtraLargeBitmap;
-            thumbnail1.Source = BitmapToBitmapImage(bmp);
+        private void ClearPreviewFileInformation()
+        {
+            FilesListBox_Preview.Items.Clear();
+            // text fields
+            fWidth.Text = "1920";
+            fHeight.Text = "1080";
+            fVidCodec.Clear();
+            fAudCodec.Clear();
+            fName.Clear();
+
+            // check boxes
+            fResChecked.IsChecked = false;
+            fVCodecChecked.IsChecked = false;
+            fACodecChecked.IsChecked = false;
+            fFramesChecked.IsChecked = false;
+            fNameChecked.IsChecked = false;
+
+            // file info fields
+            previewName_Copy.Clear();
+            previewPath_Copy.Clear();
+            previewResol_Copy.Clear();
+            previewFPS_Copy.Clear();
+            previewVidCodec_Copy.Clear();
+            previewAudioCodec_Copy.Clear();
+            previewFileSize_Copy.Clear();
+            thumbnail1.Source = null;
         }
 
         private BitmapSource BitmapToBitmapImage(Bitmap bitmap)
@@ -198,19 +243,26 @@ namespace fileCrawlerWPF
 
         private void FilterApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            var matches = new List<ProbeFile>();
+            filterFiles = new List<ProbeFile>();
+
+            int w = 0, h = 0;
+            if (!int.TryParse(fWidth.Text, out w)) {
+                MessageBox.Show("Please enter a valid numerical value for Width");
+                return;
+            }
+            if(!int.TryParse(fHeight.Text, out h))
+            {
+                MessageBox.Show("Please enter a valid numerical value for Height");
+                return;
+            }
+
             // loop through the files and if they meet the filter, add to list
-            foreach(var file in files)
+            foreach (var file in fileDictionary.Values)
             {
                 bool ismatch = true;
                 if ((bool)fResChecked.IsChecked)
                 {
-                    if (int.TryParse(fWidth.Text, out int w) && int.TryParse(fHeight.Text, out int h))
-                    {
-                        ismatch &= file.Width >= w && file.Height >= h;
-                    }
-                    else
-                        MessageBox.Show("Please enter a valid integer for width and height");
+                    ismatch &= file.Width >= w && file.Height >= h;
                 }
                 if ((bool)fVCodecChecked.IsChecked)
                 {
@@ -231,8 +283,7 @@ namespace fileCrawlerWPF
                 }
                 if ((bool)fFramesChecked.IsChecked)
                 {
-                    ismatch &= frameratesFilter(fpsCombox.SelectedIndex, file.FrameRate, fFPS.Text);
-                   // ismatch &= Math.Round(file.FrameRate, 2).ToString() == fFPS.Text; 
+                    ismatch &= frameratesFilter(framesCombox.SelectedIndex, file.FrameRate);
                 }
                 if((bool)fNameChecked.IsChecked)
                 {
@@ -241,34 +292,35 @@ namespace fileCrawlerWPF
                 }
 
                 if (ismatch)
-                    matches.Add(file);
+                    filterFiles.Add(file);
             }
 
             //FilesListBox_Preview.Document.Blocks.Clear();
             FilesListBox_Preview.Items.Clear();
             // Update the listbox. 
-            foreach (var item in matches)
+            foreach (var item in filterFiles)
             {
                 //FilesListBox_Preview.AppendText(item.name);
-                FilesListBox_Preview.Items.Add(item.Name);
+                FilesListBox_Preview.Items.Add(item.Path);
             }
 
-            filterMatches.Content = "Total Matches: \n" + matches.Count;
+            filterMatches.Content = "Total Matches: \n" + filterFiles.Count;
         }
-
-        // index is the selected item of the combo box. 0 - > ; 1 - < ; 2 - =
-        bool frameratesFilter(int index, float file_fps, string input)
+        
+        bool frameratesFilter(int index, float file_fps)
         {
-            float.TryParse(input, out float filter_fps);
-            
+            // index0  = 0 - 30
+            // index1  = 30-60
+            // index2  = 60+
+            file_fps = (float)Math.Round(file_fps, 0);
             switch (index)
             {
                 case 0:
-                    return file_fps > filter_fps;
+                    return file_fps <= 30;
                 case 1:
-                    return file_fps < filter_fps;
+                    return file_fps > 30 && file_fps <= 60;
                 case 2:
-                    return file_fps == filter_fps;
+                    return file_fps > 60;
                 default:
                     return false;
             }
@@ -302,11 +354,7 @@ namespace fileCrawlerWPF
             else
                 return false;
         }
-
-        private void FilterApplyButton_Copy_Click(object sender, RoutedEventArgs e)
-        {
-            FilesListBox_Preview.Items.Clear();
-        }
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -346,11 +394,24 @@ namespace fileCrawlerWPF
         {
             if (FilesListBox_Preview.SelectedIndex == -1)
                 return;
-            foreach(var file in files)
+
+            foreach(var file in filterFiles)
             {
-                if(file.Name == FilesListBox_Preview.SelectedItem.ToString())
+                if(file.Path == FilesListBox_Preview.SelectedItem.ToString())
                 {
-                    UpdateFilteredPreview(file);
+                    previewName_Copy.Text = file.Name;
+                    previewPath_Copy.Text = file.Path;
+                    previewResol_Copy.Text = file.Width + "x" + file.Height;
+                    previewFPS_Copy.Text = file.FrameRate.ToString();
+                    previewVidCodec_Copy.Text = file.VideoCodec;
+                    previewAudioCodec_Copy.Text = file.AudioCodec;
+                    previewFileSize_Copy.Text = file.FileSize;
+
+                    Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(file.Path);
+                    Bitmap bmp = imgfile.Thumbnail.ExtraLargeBitmap;
+                    thumbnail1.Source = BitmapToBitmapImage(bmp);
+
+                    return;
                 }
             }
         }
@@ -371,6 +432,28 @@ namespace fileCrawlerWPF
                 return;
 
             Process.Start(previewPath_Copy.Text);
+        }
+
+        private void ComputeHashBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (AllFilesListBox.SelectedIndex == -1) return;
+
+            var currentFile = fileDictionary[AllFilesListBox.SelectedIndex];
+            
+            using(new WaitCursor())
+            {
+                if (currentFile.Hash == null)
+                    currentFile.ComputeHash();
+            }
+
+
+            previewHash.IsEnabled = true;
+            previewHash.Text = "#" + currentFile.HashAsHex;
+        }
+
+        private void filterReset_Click(object sender, RoutedEventArgs e)
+        {
+            ClearPreviewFileInformation();
         }
     }
     
