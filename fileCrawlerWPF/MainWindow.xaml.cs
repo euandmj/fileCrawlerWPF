@@ -68,7 +68,7 @@ namespace fileCrawlerWPF
         private void ScanBttn_Click(object sender, RoutedEventArgs e)
         {
             
-            var path = dirText.Text;
+            var path = dirText.Text.Trim();
             // var path = @"I:\Movies\TV\Rick and Morty";
 
             if (path == "")
@@ -109,7 +109,7 @@ namespace fileCrawlerWPF
                 }
             }
 
-           // CullNonVideoFiles();
+            CullNonVideoFiles();
             UpdateAllFilesListBox();
 
             totalFilesCount.Text = fileDictionary.Count.ToString();
@@ -120,26 +120,28 @@ namespace fileCrawlerWPF
             // Recurvise function to retrieve all files in a supplied dirctory. 
             // From https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
             string[] foundfiles = null;
+
             try
             {
                 foundfiles = Directory.GetFiles(path);
+
+                foreach (string s in foundfiles)
+                    fileDirectories.Add(s);
+
+                string[] subDirectories = Directory.GetDirectories(path);
+
+                foreach (string s in subDirectories)
+                {
+                    ProcessDirectory(s);
+                }
             }
             catch(UnauthorizedAccessException e)
             {
                 MessageBox.Show(e.Message);
-                return;
-            }
-
-            if (foundfiles.Length == 0) return;
-
-            foreach (string s in foundfiles)
-                fileDirectories.Add(s);
-
-            string[] subDirectories = Directory.GetDirectories(path);
-
-            foreach (string s in subDirectories)
+            }           
+            catch(Exception e)
             {
-                ProcessDirectory(s);
+                MessageBox.Show(e.Message);
             }
         }
 
