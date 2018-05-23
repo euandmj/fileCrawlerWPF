@@ -49,6 +49,9 @@ namespace fileCrawlerWPF
                 "x265"
             });
 
+        // Illegal path characters
+        readonly char[] illegal_chars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+        const char path_seperator_token = '>';
 
         public MainWindow()
         {
@@ -71,6 +74,9 @@ namespace fileCrawlerWPF
             if (path == "")
                 return;
 
+            // splits up mutliple directories
+            string[] dirinpt = path.Split(path_seperator_token);
+
             fileDirectories.Clear();
             fileDictionary.Clear();
             AllFilesListBox.Items.Clear();
@@ -80,14 +86,17 @@ namespace fileCrawlerWPF
 
             using (new WaitCursor())
             {
-                if (File.Exists(path))
+                foreach(string p in dirinpt)
                 {
-                    fileDirectories.Add(path);
-                }
-                else if (Directory.Exists(path))
-                {
-                    ProcessDirectory(path);
-                }
+                    if (File.Exists(p))
+                    {
+                        fileDirectories.Add(p);
+                    }
+                    else if (Directory.Exists(p))
+                    {
+                        ProcessDirectory(p);
+                    }
+                }               
 
                 //files = new List<ProbeFile>();
 
@@ -110,7 +119,18 @@ namespace fileCrawlerWPF
         {
             // Recurvise function to retrieve all files in a supplied dirctory. 
             // From https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
-            string[] foundfiles = Directory.GetFiles(path);
+            string[] foundfiles = null;
+            try
+            {
+                foundfiles = Directory.GetFiles(path);
+            }
+            catch(UnauthorizedAccessException e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
+
+            if (foundfiles.Length == 0) return;
 
             foreach (string s in foundfiles)
                 fileDirectories.Add(s);
@@ -199,6 +219,9 @@ namespace fileCrawlerWPF
             previewVidCodec.Clear();
             previewAudioCodec.Clear();
             previewFileSize.Clear();
+            // Clear hash info. 
+            previewHash.Clear();
+            previewHash.IsEnabled = false;
             thumbnail.Source = null;
         }
 
@@ -304,7 +327,7 @@ namespace fileCrawlerWPF
                 FilesListBox_Preview.Items.Add(item.Path);
             }
 
-            filterMatches.Content = "Total Matches: \n" + filterFiles.Count;
+            filterMatches.Content = "Total Matches: " + filterFiles.Count;
         }
         
         bool frameratesFilter(int index, float file_fps)
@@ -377,8 +400,10 @@ namespace fileCrawlerWPF
 
         private void ScanBttn_Copy_Click(object sender, RoutedEventArgs e)
         {
+            if (filterFiles.Count < 1) return;
+
             string writeToPath = @"results.txt";
-            exportTextLabel.Content = $"\"{writeToPath}\"";
+            exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
             exportTextLabel.Visibility = Visibility.Visible;
 
             using (StreamWriter sw = File.CreateText(writeToPath))
@@ -454,6 +479,21 @@ namespace fileCrawlerWPF
         private void filterReset_Click(object sender, RoutedEventArgs e)
         {
             ClearPreviewFileInformation();
+        }
+
+        private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(@"https://github.com/euandmj/fileCrawlerWPF");
+        }
+
+        private void MenuItemClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void MenuItemRefresh_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     
