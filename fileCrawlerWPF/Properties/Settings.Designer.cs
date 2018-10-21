@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+
 namespace fileCrawlerWPF.Properties
 {
 
@@ -18,6 +20,7 @@ namespace fileCrawlerWPF.Properties
     {
 
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+        internal Environment.SpecialFolder acc_path;
 
         public static Settings Default
         {

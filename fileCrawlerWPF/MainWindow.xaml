@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:fileCrawlerWPF"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="fileCrawlerWPF.MainWindow"
         mc:Ignorable="d"
-        Title="Media Filter 0.9" Height="900" Width="1210" ResizeMode="CanMinimize">
+        Title="Media Filter 0.9" Height="900" Width="1210" ResizeMode="NoResize">
     <Grid RenderTransformOrigin="0.526,0.471" Background="#FFDCDDE1">
         <Grid.RowDefinitions>
             <RowDefinition Height="233*"/>
@@ -19,8 +19,7 @@
             <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
         <!--<TextBox x:Name="DirectoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,30,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="500"/> -->
-        <extToolkit:WatermarkTextBox x:Name="dirText" Watermark="Enter Directory Here... Supply multiple directories with '>'" Margin="10,35,4,154" FontSize="18" Grid.ColumnSpan="2"/>
-        <Button x:Name="ScanBttn" Content="Scan" HorizontalAlignment="Left" Margin="1,35,0,0" VerticalAlignment="Top" Width="75" Click="ScanBttn_Click" Grid.Column="2" Height="44"/>
+        <Button x:Name="ScanBttn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Click" Height="23" Grid.ColumnSpan="2"/>
         <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
             <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
         </GroupBox>
@@ -29,7 +28,7 @@
         <Label Content="Resolution" HorizontalAlignment="Left" Margin="18,171,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Height="29" Width="75" />
         <TextBox x:Name="fWidth" HorizontalAlignment="Left" Height="23" Margin="0,173,0,0" TextWrapping="Wrap" Text="1920" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
         <TextBox x:Name="fHeight" HorizontalAlignment="Left" Height="23" Margin="59,173,0,0" TextWrapping="Wrap" Text="1080" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
-        <Label Content="x" HorizontalAlignment="Left" Margin="47,173,0,0" VerticalAlignment="Top" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25" Width="15"/>
+        <Label Content=":" HorizontalAlignment="Left" Margin="48,169.333,0,0" VerticalAlignment="Top" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25" Width="15" FontWeight="Bold"/>
         <Label Content="Video Codec" HorizontalAlignment="Left" Margin="18,197,0,0" VerticalAlignment="Top" Grid.Row="1" Height="26" Width="77" />
         <TextBox x:Name="fVidCodec" HorizontalAlignment="Left" Height="23" Margin="0,197,0,0" TextWrapping="Wrap" Text="h264" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" ToolTip="Specify an encoded video codec" Grid.Column="1"/>
         <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="18,221,0,0" VerticalAlignment="Top" Grid.Row="1" Height="26" Width="78" />
@@ -110,10 +109,12 @@
                 <MenuItem x:Name="MenuItemClose" Header="Close" Click="MenuItemClose_Click" />
                 <MenuItem x:Name="MenuItemExport" Header="Export filter results" Click="ScanBttn_Copy_Click"/>
             </MenuItem>
-            <MenuItem Header="Edit" IsEnabled="False">
-                <MenuItem x:Name="MenuItemRefresh" Header="Clear Search" Click="MenuItemRefresh_Click"/>
+            <MenuItem Header="Edit" IsEnabled="True">
+                <MenuItem x:Name="MenuItemClearTopResults" Header="Clear Search" Click="MenuItemClearTopResults_Click"/>
+                <MenuItem x:Name="MenuItemRefresh" Header="Clear Filter Results" Click="MenuItemRefresh_Click"/>
             </MenuItem>
         </Menu>
+        <Button x:Name="ScanBttn_Copy" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Copy_Click_1" Height="23" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>
