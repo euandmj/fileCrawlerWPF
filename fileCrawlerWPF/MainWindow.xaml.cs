@@ -1,5 +1,4 @@
-﻿using fileCrawlerWPF.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -92,8 +91,6 @@ namespace fileCrawlerWPF
                     return;
             }
 
-
-
             using (new WaitCursor())
             {
                 if (File.Exists(path))
@@ -170,7 +167,7 @@ namespace fileCrawlerWPF
             // Recurvise function to retrieve all files in a supplied dirctory. 
             // From https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
             string[] foundfiles = null;
-
+            
             try
             {
                 foundfiles = Directory.GetFiles(path);
@@ -320,14 +317,12 @@ namespace fileCrawlerWPF
 
 
         private void FilterApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            int w = 0, h = 0;
-            if (!int.TryParse(fWidth.Text, out w)) {
+        {            
+            if (!int.TryParse(fWidth.Text, out int w)) {
                 MessageBox.Show("Please enter a valid numerical value for Width");
                 return;
             }
-            if(!int.TryParse(fHeight.Text, out h))
+            if(!int.TryParse(fHeight.Text, out int h))
             {
                 MessageBox.Show("Please enter a valid numerical value for Height");
                 return;
@@ -357,7 +352,7 @@ namespace fileCrawlerWPF
                 if ((bool)fDurChecked.IsChecked)
                 {
                     TimeSpan ts = TimeSpan.Parse(fDur.Text);
-                    ismatch &= ts == file.duration;
+                    ismatch &= ts == file.Duration;
                 }
                 if ((bool)fFramesChecked.IsChecked)
                 {
