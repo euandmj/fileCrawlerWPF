@@ -7,105 +7,114 @@
         xmlns:local="clr-namespace:fileCrawlerWPF"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="fileCrawlerWPF.MainWindow"
         mc:Ignorable="d"
-        Title="Media Filter 0.9" Height="900" Width="1210" ResizeMode="CanMinimize">
+        Title="Media Filter 1.0" Height="900" Width="1210" ResizeMode="NoResize">
     <Grid RenderTransformOrigin="0.526,0.471" Background="#FFDCDDE1">
         <Grid.RowDefinitions>
             <RowDefinition Height="233*"/>
             <RowDefinition Height="638*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="49*"/>
-            <ColumnDefinition Width="219*"/>
-            <ColumnDefinition Width="334*"/>
+            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="61*"/>
+            <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
         <!--<TextBox x:Name="DirectoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,30,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="500"/> -->
-        <extToolkit:WatermarkTextBox x:Name="dirText" Watermark="Enter Directory Here" Margin="10,23,4,166" FontSize="18" Grid.ColumnSpan="2"/>
-        <Button x:Name="ScanBttn" Content="Scan" HorizontalAlignment="Left" Margin="1,23,0,0" VerticalAlignment="Top" Width="75" Click="ScanBttn_Click" Grid.Column="2" Height="44"/>
-        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,30,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
+        <Button x:Name="ScanBttn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Click" Height="23" Grid.ColumnSpan="2"/>
+        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
             <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
         </GroupBox>
 
-        <GroupBox Header="Filters" HorizontalAlignment="Left" Height="164" Margin="10,127,0,0" VerticalAlignment="Top" Width="698" FontSize="18" FontStyle="Italic" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="#FF487EB0"/>
-        <Label Content="Resolution" HorizontalAlignment="Left" Margin="18,159,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" />
-        <TextBox x:Name="fWidth" HorizontalAlignment="Left" Height="23" Margin="0,161,0,0" TextWrapping="Wrap" Text="1920" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
-        <TextBox x:Name="fHeight" HorizontalAlignment="Left" Height="23" Margin="59,161,0,0" TextWrapping="Wrap" Text="1080" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
-        <Label Content="x" HorizontalAlignment="Left" Margin="47,161,0,0" VerticalAlignment="Top" FontSize="11" Grid.Row="1" Grid.Column="1"/>
-        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="18,199,0,0" VerticalAlignment="Top" Grid.Row="1" />
-        <TextBox x:Name="fVidCodec" HorizontalAlignment="Left" Height="23" Margin="0,199,0,0" TextWrapping="Wrap" Text="h264" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" ToolTip="Specify an encoded video codec" Grid.Column="1"/>
-        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="18,227,0,0" VerticalAlignment="Top" Grid.Row="1" />
-        <TextBox x:Name="fAudCodec" HorizontalAlignment="Left" Height="23" Margin="0,227,0,0" TextWrapping="Wrap" Text="aac" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" ToolTip="Specify an encoded audio codec" Grid.Column="1"/>
-        <Label Content="Duration" HorizontalAlignment="Left" Margin="18,257,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1"/>
-        <TextBox x:Name="fDur" HorizontalAlignment="Left" Height="24" Margin="0,259,0,0" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" IsEnabled="False" Grid.Column="1"/>
-        <Label Content="Framerate" HorizontalAlignment="Left" Margin="151,157,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Grid.Column="1"/>
-        <CheckBox x:Name="fResChecked" Content="" HorizontalAlignment="Left" Margin="114,165,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1"/>
-        <CheckBox x:Name="fVCodecChecked" Content="" HorizontalAlignment="Left" Margin="114,203,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1"/>
-        <CheckBox x:Name="fACodecChecked" Content="" HorizontalAlignment="Left" Margin="114,231,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1"/>
-        <CheckBox x:Name="fDurChecked" Content="" HorizontalAlignment="Left" Margin="114,263,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" IsEnabled="False" Grid.Column="1"/>
-        <CheckBox x:Name="fFramesChecked" Content="" HorizontalAlignment="Left" Margin="412,165,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1"/>
-        <Button x:Name="FilterApplyButton" Content="Apply" HorizontalAlignment="Left" Margin="426,238,0,0" VerticalAlignment="Top" Width="74" Click="FilterApplyButton_Click" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
-        <ListBox x:Name="FilesListBox_Preview" HorizontalAlignment="Left" Height="254" Margin="10,296,0,0" VerticalAlignment="Top" Width="700" Grid.ColumnSpan="3" SelectionChanged="FilesListBox_Preview_SelectionChanged" Grid.Row="1" BorderBrush="#FF487EB0"/>
+        <GroupBox Header="Filters" HorizontalAlignment="Left" Height="138" Margin="10,139,0,0" VerticalAlignment="Top" Width="698" FontSize="18" FontStyle="Italic" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="#FF487EB0"/>
+        <Label Content="Resolution" HorizontalAlignment="Left" Margin="18,171,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Height="29" Width="75" />
+        <TextBox x:Name="fWidth" HorizontalAlignment="Left" Height="23" Margin="0,173,0,0" TextWrapping="Wrap" Text="1920" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
+        <TextBox x:Name="fHeight" HorizontalAlignment="Left" Height="23" Margin="59,173,0,0" TextWrapping="Wrap" Text="1080" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
+        <Label Content=":" HorizontalAlignment="Left" Margin="48,169.333,0,0" VerticalAlignment="Top" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25" Width="15" FontWeight="Bold"/>
+        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="18,197,0,0" VerticalAlignment="Top" Grid.Row="1" Height="26" Width="77" />
+        <TextBox x:Name="fVidCodec" HorizontalAlignment="Left" Height="23" Margin="0,197,0,0" TextWrapping="Wrap" Text="h264" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" ToolTip="Specify an encoded video codec" Grid.Column="1"/>
+        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="18,221,0,0" VerticalAlignment="Top" Grid.Row="1" Height="26" Width="78" />
+        <TextBox x:Name="fAudCodec" HorizontalAlignment="Left" Height="23" Margin="0,221,0,0" TextWrapping="Wrap" Text="aac" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" ToolTip="Specify an encoded audio codec" Grid.Column="1"/>
+        <Label Content="Duration" HorizontalAlignment="Left" Margin="18,243,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Height="29" Width="64"/>
+        <TextBox x:Name="fDur" HorizontalAlignment="Left" Height="24" Margin="0,245,0,0" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Width="109" TextAlignment="Center" Grid.Row="1" IsEnabled="False" Grid.Column="1"/>
+        <Label Content="Framerate" HorizontalAlignment="Left" Margin="151,169,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Grid.Column="1" Height="29" Width="72"/>
+        <CheckBox x:Name="fResChecked" Content="" HorizontalAlignment="Left" Margin="114,177,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Height="15"/>
+        <CheckBox x:Name="fVCodecChecked" Content="" HorizontalAlignment="Left" Margin="114,201,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Height="15"/>
+        <CheckBox x:Name="fACodecChecked" Content="" HorizontalAlignment="Left" Margin="114,225,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Height="15"/>
+        <CheckBox x:Name="fDurChecked" Content="" HorizontalAlignment="Left" Margin="114,249,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" IsEnabled="False" Grid.Column="1" Height="15"/>
+        <CheckBox x:Name="fFramesChecked" Content="" HorizontalAlignment="Left" Margin="412,177,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="15"/>
+        <Button x:Name="FilterApplyButton" Content="Apply" HorizontalAlignment="Left" Margin="98,248,0,0" VerticalAlignment="Top" Width="74" Click="FilterApplyButton_Click" Grid.Row="1" Grid.Column="2" Height="20"/>
+        <ListBox x:Name="FilesListBox_Preview" HorizontalAlignment="Left" Height="280" Margin="10,282,0,0" VerticalAlignment="Top" Width="700" Grid.ColumnSpan="3" SelectionChanged="FilesListBox_Preview_SelectionChanged" Grid.Row="1" BorderBrush="#FF487EB0"/>
+        <Label Content="File Name" HorizontalAlignment="Left" Margin="207,72,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
 
-        <Button x:Name="ScanBttn_Copy" Content="Export As Text" HorizontalAlignment="Left" Margin="10,570,0,0" VerticalAlignment="Top" Width="110" Click="ScanBttn_Copy_Click" Grid.Row="1" Grid.ColumnSpan="2"/>
-        <Label Content="File Name" HorizontalAlignment="Left" Margin="207,60,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-
-        <TextBox x:Name="previewName"  HorizontalAlignment="Left" Height="22" Margin="210,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Full Path" HorizontalAlignment="Left" Margin="207,100,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-        <TextBox x:Name="previewPath" HorizontalAlignment="Left" Height="35" Margin="210,115,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" FontSize="9" Grid.Column="2"/>
-        <Label Content="Resolution" HorizontalAlignment="Left" Margin="207,145,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-        <TextBox x:Name="previewResol" HorizontalAlignment="Left" Height="22" Margin="210,160,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Frame Rate" HorizontalAlignment="Left" Margin="207,178,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-        <TextBox x:Name="previewFPS" HorizontalAlignment="Left" Height="22" Margin="210,193,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="207,212,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-        <TextBox x:Name="previewVidCodec" HorizontalAlignment="Left" Height="22" Margin="210,227,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.RowSpan="2"/>
-        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="207,13,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewAudioCodec" HorizontalAlignment="Left" Height="22" Margin="210,28,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewFileSize" HorizontalAlignment="Left" Height="22" Margin="210,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="File Size" HorizontalAlignment="Left" Margin="207,45,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
+        <TextBox x:Name="previewName"  HorizontalAlignment="Left" Height="22" Margin="210,87,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" Grid.Column="2"/>
+        <Label Content="Full Path" HorizontalAlignment="Left" Margin="207,112,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
+        <TextBox x:Name="previewPath" HorizontalAlignment="Left" Height="35" Margin="210,127,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" FontSize="9" Grid.Column="2"/>
+        <Label Content="Resolution" HorizontalAlignment="Left" Margin="207,157,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
+        <TextBox x:Name="previewResol" HorizontalAlignment="Left" Height="22" Margin="210,172,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
+        <Label Content="Frame Rate" HorizontalAlignment="Left" Margin="207,190,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
+        <TextBox x:Name="previewFPS" HorizontalAlignment="Left" Height="22" Margin="210,205,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
+        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="206.667,222,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.RowSpan="2" Height="21"/>
+        <TextBox x:Name="previewVidCodec" HorizontalAlignment="Left" Height="22" Margin="210,6,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="207,25,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewAudioCodec" HorizontalAlignment="Left" Height="22" Margin="210,40,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <TextBox x:Name="previewFileSize" HorizontalAlignment="Left" Height="22" Margin="210,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="File Size" HorizontalAlignment="Left" Margin="207,57,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
 
 
-        <Label Content="Total Files Found" HorizontalAlignment="Left" Margin="81,30,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2"/>
-        <TextBox x:Name="totalFilesCount" HorizontalAlignment="Left" Height="22" Margin="82,45,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="91" IsReadOnly="True" Grid.Column="2"/>
-        <Label x:Name="filterMatches" Content="Total Matches:" HorizontalAlignment="Left" Margin="67,238,0,0" VerticalAlignment="Top" Width="99" FontSize="11" Grid.Row="1" Grid.Column="2"/>
-        <Button x:Name="filterReset" Content="Clear Results" HorizontalAlignment="Left" Margin="405,263,0,0" VerticalAlignment="Top" Width="95" Click="filterReset_Click" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="1"/>
-        <Button x:Name="openFileBtn" Content="Open File" HorizontalAlignment="Left" Margin="549,4,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="Button_Click" Grid.Row="1"/>
-        <TextBox x:Name="fName" HorizontalAlignment="Left" Height="23" Margin="231,203,0,0" TextWrapping="Wrap" Text="Shrek 3" VerticalAlignment="Top" Width="170" TextAlignment="Center" Grid.Row="1" Grid.Column="1"/>
-        <Label Content="Name" HorizontalAlignment="Left" Margin="151,199,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Grid.Column="1"/>
-        <CheckBox x:Name="fNameChecked" Content="" HorizontalAlignment="Left" Margin="412,207,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1"/>
-        <Button x:Name="openFolderBtn" Content="Open Folder" HorizontalAlignment="Left" Margin="549,211,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFolderBtn_Click"/>
-        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="422" Margin="195,128,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.Row="1" BorderBrush="#FF487EB0">
+        <Label Content="Total Files Found" HorizontalAlignment="Left" Margin="81,42,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
+        <TextBox x:Name="totalFilesCount" HorizontalAlignment="Left" Height="22" Margin="82,57,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90" IsReadOnly="True" Grid.Column="2"/>
+        <Label x:Name="filterMatches" Content="Total Matches:" HorizontalAlignment="Left" Margin="151,223,0,0" VerticalAlignment="Top" Width="99" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25"/>
+        <Button x:Name="filterReset" Content="Clear Results" HorizontalAlignment="Left" Margin="97,223,0,0" VerticalAlignment="Top" Width="75" Click="filterReset_Click" Grid.Row="1" Grid.Column="2" Height="20"/>
+        <Button x:Name="openFileBtn" Content="Open File" HorizontalAlignment="Left" Margin="549,16,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="Button_Click" Grid.Row="1" Height="20"/>
+        <TextBox x:Name="fName" HorizontalAlignment="Left" Height="23" Margin="231,196,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="170" TextAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+        <Label Content="Name" HorizontalAlignment="Left" Margin="151,192,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Grid.Column="1" Height="29" Width="47"/>
+        <CheckBox x:Name="fNameChecked" Content="" HorizontalAlignment="Left" Margin="412,200,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="15"/>
+        <Button x:Name="openFolderBtn" Content="Open Folder" HorizontalAlignment="Left" Margin="549,223,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFolderBtn_Click" Grid.RowSpan="2" Height="20"/>
+        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="422" Margin="195,140,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.Row="1" BorderBrush="#FF487EB0">
             <Image x:Name="thumbnail1" HorizontalAlignment="Left" Height="150" Margin="214,152,0,0" VerticalAlignment="Top" Width="152" Stretch="UniformToFill"/>
         </GroupBox>
-        <Label Content="File Name" HorizontalAlignment="Left" Margin="207,173,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewName_Copy" HorizontalAlignment="Left" Height="22" Margin="210,188,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Full Path" HorizontalAlignment="Left" Margin="207,213,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewPath_Copy" HorizontalAlignment="Left" Height="37" Margin="210,228,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" FontSize="9" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Resolution" HorizontalAlignment="Left" Margin="207,262,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewResol_Copy" HorizontalAlignment="Left" Height="22" Margin="210,277,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Frame Rate" HorizontalAlignment="Left" Margin="207,297,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewFPS_Copy" HorizontalAlignment="Left" Height="22" Margin="210,312,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="207,339,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewVidCodec_Copy" HorizontalAlignment="Left" Height="22" Margin="210,354,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="207,381,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewAudioCodec_Copy" HorizontalAlignment="Left" Height="22" Margin="210,396,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Button x:Name="openFileBtn_Copy" Content="Open File" HorizontalAlignment="Left" Margin="549,524,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFileBtn_Copy_Click" Grid.Row="1"/>
-        <Button x:Name="openFolderBtn_Copy" Content="Open Folder" HorizontalAlignment="Left" Margin="549,499,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFolderBtn_Copy_Click" Grid.Row="1"/>
-        <Label x:Name="exportTextLabel" Content="Label" HorizontalAlignment="Left" Margin="23,570,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="9" FontStyle="Italic" Visibility="Hidden" Grid.Column="1"/>
-        <Label Content="File Size" HorizontalAlignment="Left" Margin="207,427,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewFileSize_Copy" HorizontalAlignment="Left" Height="22" Margin="210,443,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <DataGrid x:Name="AllFilesListBox" HorizontalAlignment="Left" Height="252" Margin="10,75,0,0" VerticalAlignment="Top" Width="700" Grid.ColumnSpan="3" Grid.RowSpan="2" SelectionChanged="AllFilesListBox_SelectionChanged" CanUserSortColumns="False" IsReadOnly="True" BorderBrush="#FF487EB0">
+        <Label Content="File Name" HorizontalAlignment="Left" Margin="207,185,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewName_Copy" HorizontalAlignment="Left" Height="22" Margin="210,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Full Path" HorizontalAlignment="Left" Margin="207,225,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewPath_Copy" HorizontalAlignment="Left" Height="37" Margin="210,240,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="430" IsReadOnly="True" FontSize="9" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Resolution" HorizontalAlignment="Left" Margin="207,274,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewResol_Copy" HorizontalAlignment="Left" Height="22" Margin="210,289,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Frame Rate" HorizontalAlignment="Left" Margin="207,309,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewFPS_Copy" HorizontalAlignment="Left" Height="22" Margin="210,324,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="207,351,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewVidCodec_Copy" HorizontalAlignment="Left" Height="22" Margin="210,366,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="207,393,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewAudioCodec_Copy" HorizontalAlignment="Left" Height="22" Margin="210,408,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <Button x:Name="openFileBtn_Copy" Content="Open File" HorizontalAlignment="Left" Margin="549,536,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFileBtn_Copy_Click" Grid.Row="1" Height="20"/>
+        <Button x:Name="openFolderBtn_Copy" Content="Open Folder" HorizontalAlignment="Left" Margin="549,511,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFolderBtn_Copy_Click" Grid.Row="1" Height="20"/>
+        <Label x:Name="exportTextLabel" Content="Label" HorizontalAlignment="Left" Margin="154,245,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="9" FontStyle="Italic" Visibility="Hidden" Grid.Column="1" Height="22" Width="222"/>
+        <Label Content="File Size" HorizontalAlignment="Left" Margin="207,439,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
+        <TextBox x:Name="previewFileSize_Copy" HorizontalAlignment="Left" Height="22" Margin="210,455,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
+        <DataGrid x:Name="AllFilesListBox" HorizontalAlignment="Left" Height="252" Margin="10,87,0,0" VerticalAlignment="Top" Width="698" Grid.ColumnSpan="3" Grid.RowSpan="2" SelectionChanged="AllFilesListBox_SelectionChanged" CanUserSortColumns="False" IsReadOnly="True" BorderBrush="#FF487EB0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Index" Binding="{Binding Index, Mode=OneWay}" Width="40"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" Width="auto"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="ComputeHashBtn" Content="Get File Hash" HorizontalAlignment="Left" Margin="549,28,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="ComputeHashBtn_Click" Grid.Row="1" Height="22"/>
-        <TextBox x:Name="previewHash" HorizontalAlignment="Left" Height="22" Margin="335,61,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="305" IsReadOnly="True" Grid.Column="2" Grid.Row="1" IsEnabled="False"/>
-        <ComboBox x:Name="framesCombox" HorizontalAlignment="Left" Margin="231,161,0,0" VerticalAlignment="Top" Width="104" Height="21" SelectedIndex="2" Grid.Row="1" Grid.Column="1">
+        <Button x:Name="ComputeHashBtn" Content="Get File Hash" HorizontalAlignment="Left" Margin="549,40,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="ComputeHashBtn_Click" Grid.Row="1" Height="22"/>
+        <TextBox x:Name="previewHash" HorizontalAlignment="Left" Height="22" Margin="335,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="305" IsReadOnly="True" Grid.Column="2" Grid.Row="1" IsEnabled="False"/>
+        <ComboBox x:Name="framesCombox" HorizontalAlignment="Left" Margin="231,173,0,0" VerticalAlignment="Top" Width="104" Height="21" SelectedIndex="2" Grid.Row="1" Grid.Column="1">
             <Label Content="0-30"/>
             <Label Content="30-60"/>
             <Label Content="60+"/>
         </ComboBox>
-        <Separator HorizontalAlignment="Left" Height="34" Margin="0,97,0,0" Grid.Row="1" VerticalAlignment="Top" Width="1204" Grid.ColumnSpan="3" Background="#FF192A56"/>
+        <Separator HorizontalAlignment="Left" Height="34" Margin="0,109,0,0" Grid.Row="1" VerticalAlignment="Top" Width="1204" Grid.ColumnSpan="3" Background="#FF192A56"/>
+        <Menu x:Name="MenuBar" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="1203" Margin="1,-1,0,0" Grid.ColumnSpan="3" Background="#FFDCDDE1">
+            <MenuItem Header="File">
+                <MenuItem x:Name="MenuItemServerStatus" Header="View On Github" Click="MenuItemServerStatus_Click"/>
+                <MenuItem x:Name="MenuItemClose" Header="Close" Click="MenuItemClose_Click" />
+                <MenuItem x:Name="MenuItemExport" Header="Export filter results" Click="ScanBttn_Copy_Click"/>
+            </MenuItem>
+            <MenuItem Header="Edit" IsEnabled="True">
+                <MenuItem x:Name="MenuItemClearTopResults" Header="Clear Search" Click="MenuItemClearTopResults_Click"/>
+                <MenuItem x:Name="MenuItemRefresh" Header="Clear Filter Results" Click="MenuItemRefresh_Click"/>
+            </MenuItem>
+        </Menu>
+        <Button x:Name="ScanBttn_Copy" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Copy_Click_1" Height="23" Grid.ColumnSpan="2"/>
 
     </Grid>
 </Window>

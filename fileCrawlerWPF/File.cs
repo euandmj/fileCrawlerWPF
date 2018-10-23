@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 
 namespace fileCrawlerWPF
 {
@@ -24,23 +26,19 @@ namespace fileCrawlerWPF
         private int index;
         private byte[] hash; 
 
-        public TimeSpan duration;
+        private TimeSpan duration;
         public CodecInfo videoCodec;
 
         public int Index { get { return index; } set { index = value; } }
-        public string Name {  get { return name; } set { name = value; } }
-        public int Duration { get { return duration.Minutes; }
-            set
-            {
-                duration = TimeSpan.Parse(value.ToString());
-            }
-        }
+        public string Name {  get { return name; } set { name = value; } }       
         public int Width { get { return width; } set { width = value; } }
         public int Height { get { return height; } set { height = value; } }
         public float FrameRate { get { return framerate; }set { framerate = value; } }
         public string VideoCodec { get { return videoCodec.codec; } }
         public string AudioCodec { get { return audioCodec.codec; } }
         public string Path { get { return path; } set { path = value; } }
+        public TimeSpan Duration {  get { return duration; } }
+
         public string FileSize  
         {
             get
@@ -57,10 +55,21 @@ namespace fileCrawlerWPF
             }
         }
 
+        
+
         public ProbeFile(string path, int index, bool logToggle = false)
         {
             this.path = path;
             this.index = index;
+
+
+            //using (var shell = ShellObject.FromParsingName(Path))
+            //{
+            //    IShellProperty p = shell.Properties.System.Media.Duration;
+            //    duration = p.FormatForDisplay(PropertyDescriptionFormatOptions.None).ToString();
+            //}
+
+
             isLoggingEnabled = logToggle;
 
             name = this.path.Substring(this.path.LastIndexOf('\\') + 1);

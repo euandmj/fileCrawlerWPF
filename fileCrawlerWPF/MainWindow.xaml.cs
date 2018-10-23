@@ -22,9 +22,10 @@ namespace fileCrawlerWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string lastCheckedDirectory = string.Empty;
         List<string> fileDirectories;
         Dictionary<int, ProbeFile> fileDictionary;
-        List<ProbeFile> filterFiles;
+        //List<ProbeFile> filterFiles;
         
 
         // Alias for codec types. to be more flexible on the user
@@ -49,6 +50,9 @@ namespace fileCrawlerWPF
                 "x265"
             });
 
+        // Illegal path characters
+        readonly char[] illegal_chars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+        const char path_seperator_token = '>';
 
         public MainWindow()
         {
@@ -64,19 +68,28 @@ namespace fileCrawlerWPF
 
         private void ScanBttn_Click(object sender, RoutedEventArgs e)
         {
-            
-            var path = dirText.Text;
-            // var path = @"I:\Movies\TV\Rick and Morty";
+#if DEBUG
+            lastCheckedDirectory = @"I:\Movies\"; //debugging
+#endif
+            string path = string.Empty;
 
-            if (path == "")
-                return;
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.SelectedPath = lastCheckedDirectory;
+                var result = dialog.ShowDialog();
 
-            fileDirectories.Clear();
-            fileDictionary.Clear();
-            AllFilesListBox.Items.Clear();
-            previewHash.Clear(); 
-            previewHash.IsEnabled = false;
-            ClearSelectedFileInformation();
+                if(result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                {
+                    lastCheckedDirectory = dialog.SelectedPath;
+                }
+               
+
+
+                path = lastCheckedDirectory;
+
+                if (path == string.Empty)
+                    return;
+            }
 
             using (new WaitCursor())
             {
@@ -88,19 +101,62 @@ namespace fileCrawlerWPF
                 {
                     ProcessDirectory(path);
                 }
-
-                //files = new List<ProbeFile>();
-
-                foreach (string s in fileDirectories)
-                {
-                    // files.Add(new ProbeFile(s, fileDictionary.Count + 1));
-                    ProbeFile pf = new ProbeFile(s, fileDictionary.Count);
-
-                    if (pf.videoCodec.codecType == "video") fileDictionary.Add(pf.Index, pf);
-                }
             }
 
-           // CullNonVideoFiles();
+            foreach(string s in fileDirectories)
+            {
+                var pf = new ProbeFile(s, fileDictionary.Count);
+
+                if (pf.videoCodec.codecType == "video" && 
+                    !fileDictionary.Any(entry => entry.Value.Path == pf.Path))
+                    fileDictionary.Add(pf.Index, pf);
+            }
+
+
+            CullNonVideoFiles();
+            UpdateAllFilesListBox();
+
+            totalFilesCount.Text = fileDictionary.Count.ToString();
+        }
+
+        private void ScanBttn_Copy_Click_1(object sender, RoutedEventArgs e)
+        {
+            string path = string.Empty;
+
+            using (var dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.InitialDirectory = lastCheckedDirectory;
+                var result = dialog.ShowDialog();
+
+                if(result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
+                {
+                    lastCheckedDirectory = dialog.FileName;
+                }
+
+                path = lastCheckedDirectory;
+
+                if (path == string.Empty)
+                    return;
+            }
+
+            using(new WaitCursor())
+            {
+                if (File.Exists(path))
+                    fileDirectories.Add(path);
+                else
+                    return;
+            }
+
+            foreach(string s in fileDirectories)
+            {
+                var pf = new ProbeFile(s, fileDictionary.Count);
+
+                if (pf.videoCodec.codecType == "video" &&
+                    !fileDictionary.Any(entry => entry.Value.Path == pf.Path))
+                    fileDictionary.Add(pf.Index, pf);
+            }
+
+            CullNonVideoFiles();
             UpdateAllFilesListBox();
 
             totalFilesCount.Text = fileDictionary.Count.ToString();
@@ -110,16 +166,29 @@ namespace fileCrawlerWPF
         {
             // Recurvise function to retrieve all files in a supplied dirctory. 
             // From https://msdn.microsoft.com/en-us/library/07wt70x2(v=vs.110).aspx
-            string[] foundfiles = Directory.GetFiles(path);
-
-            foreach (string s in foundfiles)
-                fileDirectories.Add(s);
-
-            string[] subDirectories = Directory.GetDirectories(path);
-
-            foreach (string s in subDirectories)
+            string[] foundfiles = null;
+            
+            try
             {
-                ProcessDirectory(s);
+                foundfiles = Directory.GetFiles(path);
+
+                foreach (string s in foundfiles)
+                    fileDirectories.Add(s);
+
+                string[] subDirectories = Directory.GetDirectories(path);
+
+                foreach (string s in subDirectories)
+                {
+                    ProcessDirectory(s);
+                }
+            }
+            catch(UnauthorizedAccessException e)
+            {
+                MessageBox.Show(e.Message);
+            }           
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
 
@@ -156,6 +225,8 @@ namespace fileCrawlerWPF
 
         private void UpdateAllFilesListBox()
         {
+            AllFilesListBox.Items.Clear();
+
             foreach(var dict in fileDictionary)
             {
                 AllFilesListBox.Items.Add(new ListViewItem { Index = dict.Key, Name = dict.Value.Name });
@@ -192,6 +263,7 @@ namespace fileCrawlerWPF
 
         private void ClearSelectedFileInformation()
         {
+            totalFilesCount.Text = fileDictionary.Count.ToString();
             previewName.Clear();
             previewPath.Clear();
             previewResol.Clear();
@@ -199,6 +271,9 @@ namespace fileCrawlerWPF
             previewVidCodec.Clear();
             previewAudioCodec.Clear();
             previewFileSize.Clear();
+            // Clear hash info. 
+            previewHash.Clear();
+            previewHash.IsEnabled = false;
             thumbnail.Source = null;
         }
 
@@ -242,20 +317,18 @@ namespace fileCrawlerWPF
 
 
         private void FilterApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            filterFiles = new List<ProbeFile>();
-
-            int w = 0, h = 0;
-            if (!int.TryParse(fWidth.Text, out w)) {
+        {            
+            if (!int.TryParse(fWidth.Text, out int w)) {
                 MessageBox.Show("Please enter a valid numerical value for Width");
                 return;
             }
-            if(!int.TryParse(fHeight.Text, out h))
+            if(!int.TryParse(fHeight.Text, out int h))
             {
                 MessageBox.Show("Please enter a valid numerical value for Height");
                 return;
             }
 
+            FilesListBox_Preview.Items.Clear();
             // loop through the files and if they meet the filter, add to list
             foreach (var file in fileDictionary.Values)
             {
@@ -279,7 +352,7 @@ namespace fileCrawlerWPF
                 if ((bool)fDurChecked.IsChecked)
                 {
                     TimeSpan ts = TimeSpan.Parse(fDur.Text);
-                    ismatch &= ts == file.duration;
+                    ismatch &= ts == file.Duration;
                 }
                 if ((bool)fFramesChecked.IsChecked)
                 {
@@ -290,21 +363,13 @@ namespace fileCrawlerWPF
                     // ismatch &= file.Name.ToLower().Contains(fName.Text.ToLower());
                     ismatch &= isSearchNameMatch(fName.Text.ToLower(), file.Name.ToLower());
                 }
-
                 if (ismatch)
-                    filterFiles.Add(file);
+                {
+                    FilesListBox_Preview.Items.Add(file.Path);
+                }
             }
-
-            //FilesListBox_Preview.Document.Blocks.Clear();
-            FilesListBox_Preview.Items.Clear();
-            // Update the listbox. 
-            foreach (var item in filterFiles)
-            {
-                //FilesListBox_Preview.AppendText(item.name);
-                FilesListBox_Preview.Items.Add(item.Path);
-            }
-
-            filterMatches.Content = "Total Matches: \n" + filterFiles.Count;
+            
+            filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
         }
         
         bool frameratesFilter(int index, float file_fps)
@@ -377,8 +442,10 @@ namespace fileCrawlerWPF
 
         private void ScanBttn_Copy_Click(object sender, RoutedEventArgs e)
         {
+            if (FilesListBox_Preview.Items.Count < 1) return;
+
             string writeToPath = @"results.txt";
-            exportTextLabel.Content = $"\"{writeToPath}\"";
+            exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
             exportTextLabel.Visibility = Visibility.Visible;
 
             using (StreamWriter sw = File.CreateText(writeToPath))
@@ -395,7 +462,7 @@ namespace fileCrawlerWPF
             if (FilesListBox_Preview.SelectedIndex == -1)
                 return;
 
-            foreach(var file in filterFiles)
+            foreach(var file in fileDictionary.Values)
             {
                 if(file.Path == FilesListBox_Preview.SelectedItem.ToString())
                 {
@@ -454,6 +521,28 @@ namespace fileCrawlerWPF
         private void filterReset_Click(object sender, RoutedEventArgs e)
         {
             ClearPreviewFileInformation();
+        }
+
+        private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(@"https://github.com/euandmj/fileCrawlerWPF");
+        }
+
+        private void MenuItemClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        } 
+
+        private void MenuItemRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            ClearPreviewFileInformation();
+        }
+
+        private void MenuItemClearTopResults_Click(object sender, RoutedEventArgs e)
+        {
+            fileDictionary.Clear(); 
+            ClearSelectedFileInformation();
+            UpdateAllFilesListBox();
         }
     }
     
