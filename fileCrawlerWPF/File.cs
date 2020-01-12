@@ -53,9 +53,7 @@ namespace fileCrawlerWPF
             {
                 return hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
             }
-        }
-
-        
+        }        
 
         public ProbeFile(string path, int index, bool logToggle = false)
         {
