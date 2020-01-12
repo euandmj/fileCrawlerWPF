@@ -51,7 +51,7 @@ namespace fileCrawlerWPF
             });
 
         // Illegal path characters
-        readonly char[] illegal_chars = { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
+        readonly char[] illegal_chars = new char[]{ '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
         const char path_seperator_token = '>';
 
         public MainWindow()
@@ -68,9 +68,9 @@ namespace fileCrawlerWPF
 
         private void ScanBttn_Click(object sender, RoutedEventArgs e)
         {
-#if DEBUG
-            lastCheckedDirectory = @"I:\Movies\"; //debugging
-#endif
+//#if DEBUG
+//            lastCheckedDirectory = @"I:\Movies\"; //debugging
+//#endif
             string path = string.Empty;
 
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
@@ -172,8 +172,7 @@ namespace fileCrawlerWPF
             {
                 foundfiles = Directory.GetFiles(path);
 
-                foreach (string s in foundfiles)
-                    fileDirectories.Add(s);
+                fileDirectories.AddRange(foundfiles.ToList());
 
                 string[] subDirectories = Directory.GetDirectories(path);
 
@@ -462,25 +461,24 @@ namespace fileCrawlerWPF
             if (FilesListBox_Preview.SelectedIndex == -1)
                 return;
 
-            foreach(var file in fileDictionary.Values)
-            {
-                if(file.Path == FilesListBox_Preview.SelectedItem.ToString())
-                {
-                    previewName_Copy.Text = file.Name;
-                    previewPath_Copy.Text = file.Path;
-                    previewResol_Copy.Text = file.Width + "x" + file.Height;
-                    previewFPS_Copy.Text = file.FrameRate.ToString();
-                    previewVidCodec_Copy.Text = file.VideoCodec;
-                    previewAudioCodec_Copy.Text = file.AudioCodec;
-                    previewFileSize_Copy.Text = file.FileSize;
+            string tofind = FilesListBox_Preview.SelectedItem.ToString();
 
-                    Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(file.Path);
-                    Bitmap bmp = imgfile.Thumbnail.ExtraLargeBitmap;
-                    thumbnail1.Source = BitmapToBitmapImage(bmp);
+            var file = fileDictionary.FirstOrDefault(s => s.Value.Path == tofind).Value;
 
-                    return;
-                }
-            }
+            if (file == null)
+                return;
+
+            previewName_Copy.Text = file.Name;
+            previewPath_Copy.Text = file.Path;
+            previewResol_Copy.Text = file.Width + "x" + file.Height;
+            previewFPS_Copy.Text = file.FrameRate.ToString();
+            previewVidCodec_Copy.Text = file.VideoCodec;
+            previewAudioCodec_Copy.Text = file.AudioCodec;
+            previewFileSize_Copy.Text = file.FileSize;
+
+            Microsoft.WindowsAPICodePack.Shell.ShellFile imgfile = Microsoft.WindowsAPICodePack.Shell.ShellFile.FromFilePath(file.Path);
+            Bitmap bmp = imgfile.Thumbnail.ExtraLargeBitmap;
+            thumbnail1.Source = BitmapToBitmapImage(bmp);
         }
 
         private void openFolderBtn_Copy_Click(object sender, RoutedEventArgs e)
@@ -495,7 +493,7 @@ namespace fileCrawlerWPF
 
         private void openFileBtn_Copy_Click(object sender, RoutedEventArgs e)
         {
-            if (previewPath_Copy.Text == "")
+            if (string.IsNullOrEmpty(previewPath_Copy.Text))
                 return;
 
             Process.Start(previewPath_Copy.Text);
@@ -540,7 +538,8 @@ namespace fileCrawlerWPF
 
         private void MenuItemClearTopResults_Click(object sender, RoutedEventArgs e)
         {
-            fileDictionary.Clear(); 
+            fileDictionary.Clear();
+            fileDirectories.Clear();
             ClearSelectedFileInformation();
             UpdateAllFilesListBox();
         }

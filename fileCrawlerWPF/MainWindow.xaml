@@ -18,8 +18,10 @@
             <ColumnDefinition Width="61*"/>
             <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
-        <!--<TextBox x:Name="DirectoryTxt" HorizontalAlignment="Left" Height="23" Margin="10,30,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="500"/> -->
-        <Button x:Name="ScanBttn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,29,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Click" Height="23" Grid.ColumnSpan="2"/>
+        
+        <Button x:Name="ScanBttn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,172.333" Height="25" Width="96" Click="ScanBttn_Click" Grid.Column="1"/>
+        <Button x:Name="ScanBttn_Copy" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,0"  VerticalAlignment="Top" Width="96" Height="25" Click="ScanBttn_Copy_Click_1" Grid.ColumnSpan="2"/>
+
         <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
             <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
         </GroupBox>
@@ -60,8 +62,8 @@
         <Label Content="File Size" HorizontalAlignment="Left" Margin="207,57,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
 
 
-        <Label Content="Total Files Found" HorizontalAlignment="Left" Margin="81,42,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
-        <TextBox x:Name="totalFilesCount" HorizontalAlignment="Left" Height="22" Margin="82,57,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90" IsReadOnly="True" Grid.Column="2"/>
+        <Label Content="Total Files Found" HorizontalAlignment="Left" Margin="80.667,28,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
+        <TextBox x:Name="totalFilesCount" HorizontalAlignment="Left" Height="22" Margin="81.667,43,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90" IsReadOnly="True" Grid.Column="2"/>
         <Label x:Name="filterMatches" Content="Total Matches:" HorizontalAlignment="Left" Margin="151,223,0,0" VerticalAlignment="Top" Width="99" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25"/>
         <Button x:Name="filterReset" Content="Clear Results" HorizontalAlignment="Left" Margin="97,223,0,0" VerticalAlignment="Top" Width="75" Click="filterReset_Click" Grid.Row="1" Grid.Column="2" Height="20"/>
         <Button x:Name="openFileBtn" Content="Open File" HorizontalAlignment="Left" Margin="549,16,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="Button_Click" Grid.Row="1" Height="20"/>
@@ -89,7 +91,7 @@
         <Label x:Name="exportTextLabel" Content="Label" HorizontalAlignment="Left" Margin="154,245,0,0" Grid.Row="1" VerticalAlignment="Top" FontSize="9" FontStyle="Italic" Visibility="Hidden" Grid.Column="1" Height="22" Width="222"/>
         <Label Content="File Size" HorizontalAlignment="Left" Margin="207,439,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
         <TextBox x:Name="previewFileSize_Copy" HorizontalAlignment="Left" Height="22" Margin="210,455,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <DataGrid x:Name="AllFilesListBox" HorizontalAlignment="Left" Height="252" Margin="10,87,0,0" VerticalAlignment="Top" Width="698" Grid.ColumnSpan="3" Grid.RowSpan="2" SelectionChanged="AllFilesListBox_SelectionChanged" CanUserSortColumns="False" IsReadOnly="True" BorderBrush="#FF487EB0">
+        <DataGrid x:Name="AllFilesListBox" HorizontalAlignment="Left" Height="269" Margin="10,70,0,0" VerticalAlignment="Top" Width="698" Grid.ColumnSpan="3" Grid.RowSpan="2" SelectionChanged="AllFilesListBox_SelectionChanged" CanUserSortColumns="False" IsReadOnly="True" BorderBrush="#FF487EB0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Index" Binding="{Binding Index, Mode=OneWay}" Width="40"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" Width="auto"/>
@@ -105,16 +107,17 @@
         <Separator HorizontalAlignment="Left" Height="34" Margin="0,109,0,0" Grid.Row="1" VerticalAlignment="Top" Width="1204" Grid.ColumnSpan="3" Background="#FF192A56"/>
         <Menu x:Name="MenuBar" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="1203" Margin="1,-1,0,0" Grid.ColumnSpan="3" Background="#FFDCDDE1">
             <MenuItem Header="File">
+                <MenuItem x:Name="ImportFolder" Header="Import Folder" Click="ScanBttn_Click"/>
+                <MenuItem x:Name="ImportFile" Header="Import File" Click="ScanBttn_Copy_Click_1"/>
+                <Separator/>
+                <MenuItem x:Name="MenuItemExport" Header="Export Filter Results" Click="ScanBttn_Copy_Click"/>
                 <MenuItem x:Name="MenuItemServerStatus" Header="View On Github" Click="MenuItemServerStatus_Click"/>
                 <MenuItem x:Name="MenuItemClose" Header="Close" Click="MenuItemClose_Click" />
-                <MenuItem x:Name="MenuItemExport" Header="Export filter results" Click="ScanBttn_Copy_Click"/>
             </MenuItem>
             <MenuItem Header="Edit" IsEnabled="True">
                 <MenuItem x:Name="MenuItemClearTopResults" Header="Clear Search" Click="MenuItemClearTopResults_Click"/>
                 <MenuItem x:Name="MenuItemRefresh" Header="Clear Filter Results" Click="MenuItemRefresh_Click"/>
             </MenuItem>
         </Menu>
-        <Button x:Name="ScanBttn_Copy" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top" Width="96" Click="ScanBttn_Copy_Click_1" Height="23" Grid.ColumnSpan="2"/>
-
     </Grid>
 </Window>
