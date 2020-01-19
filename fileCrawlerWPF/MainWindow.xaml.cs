@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +24,7 @@ namespace fileCrawlerWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, INotifyPropertyChanged
+    public partial class MainWindow : Window
     {
         private string lastCheckedDirectory = string.Empty;
         List<(Guid Key, string Path, string Name)> fileDirectories;
@@ -35,15 +36,13 @@ namespace fileCrawlerWPF
         readonly char[] illegal_chars = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
         const char path_seperator_token = '>';
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public MainWindow()
         {
             InitializeComponent();
             fileCache = new Dictionary<Guid, ProbeFile>();
             filteredFiles = new List<(Guid Key, string Name)>();
             fileDirectories = new List<(Guid, string, string)>();
-        }
+        }        
 
         public ProbeFile SelectedFile { get; set; }
         public ProbeFile SelectedFilterFile { get; set; }
@@ -106,16 +105,68 @@ namespace fileCrawlerWPF
             {
                 AllFilesListBox.Items.Add(new ListViewItem { ID = dir.Key, Path = dir.Path, Name = dir.Name });
             }
-
-            OnPropertyChanged("TotalFilesCount");
         }
 
         private void CacheAll()
         {
             foreach (ListViewItem item in AllFilesListBox.Items)
             {
-                fileCache[item.ID] = new ProbeFile(item.Path, item.ID);
+                if (!fileCache.ContainsKey(item.ID))
+                    fileCache.Add(item.ID, new ProbeFile(item.Path, item.ID));
             }
+        }
+
+        private void Filter(int w, int h)
+        {
+            // first needs to complete the cache
+            CacheAll();
+
+            foreach (var file in fileCache.Values)
+            {
+                bool ismatch = true;
+                if ((bool)fResChecked.IsChecked)
+                {
+                    ismatch &= file.Width >= w && file.Height >= h;
+                }
+                if ((bool)fVCodecChecked.IsChecked)
+                {
+                    // is the entered codec an alias?
+                    if (IsTargetAnAlias(fVidCodec.Text.ToLower(), out string t))
+                        ismatch &= file.videoCodec.codec == t;
+                    else
+                        ismatch &= file.videoCodec.codec == fVidCodec.Text.ToLower();
+                }
+                if ((bool)fACodecChecked.IsChecked)
+                {
+                    ismatch &= file.AudioCodec == fAudCodec.Text.ToLower();
+                }
+                if ((bool)fDurChecked.IsChecked)
+                {
+                    TimeSpan ts = TimeSpan.Parse(fDur.Text);
+                    ismatch &= ts == file.Duration;
+                }
+                if ((bool)fFramesChecked.IsChecked)
+                {
+                    ismatch &= FrameratesFilter(framesCombox.SelectedIndex, file.FrameRate);
+                }
+                if ((bool)fNameChecked.IsChecked)
+                {
+                    // ismatch &= file.Name.ToLower().Contains(fName.Text.ToLower());
+                    ismatch &= IsSearchNameMatch(fName.Text.ToLower(), file.Name.ToLower());
+                }
+                if (ismatch)
+                {
+                    filteredFiles.Add((file.ID, file.Name));
+                }
+            }
+
+            foreach (var match in filteredFiles)
+            {
+                FilesListBox_Preview.Items.Add(match.Name);
+
+            }
+
+            filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
         }
 
         private void ClearSelectedFileInformation()
@@ -331,58 +382,12 @@ namespace fileCrawlerWPF
             }
 
             FilesListBox_Preview.Items.Clear();
+            filteredFiles.Clear();
 
-            // first needs to complete the cache
-            CacheAll();
-
-            foreach (var file in fileCache.Values)
+            using (new WaitCursor())
             {
-                bool ismatch = true;
-                if ((bool)fResChecked.IsChecked)
-                {
-                    ismatch &= file.Width >= w && file.Height >= h;
-                }
-                if ((bool)fVCodecChecked.IsChecked)
-                {
-                    // is the entered codec an alias?
-                    if (IsTargetAnAlias(fVidCodec.Text.ToLower(), out string t))
-                        ismatch &= file.videoCodec.codec == t;
-                    else
-                        ismatch &= file.videoCodec.codec == fVidCodec.Text.ToLower();
-                }
-                if ((bool)fACodecChecked.IsChecked)
-                {
-                    ismatch &= file.AudioCodec == fAudCodec.Text.ToLower();
-                }
-                if ((bool)fDurChecked.IsChecked)
-                {
-                    TimeSpan ts = TimeSpan.Parse(fDur.Text);
-                    ismatch &= ts == file.Duration;
-                }
-                if ((bool)fFramesChecked.IsChecked)
-                {
-                    ismatch &= FrameratesFilter(framesCombox.SelectedIndex, file.FrameRate);
-                }
-                if ((bool)fNameChecked.IsChecked)
-                {
-                    // ismatch &= file.Name.ToLower().Contains(fName.Text.ToLower());
-                    ismatch &= IsSearchNameMatch(fName.Text.ToLower(), file.Name.ToLower());
-                }
-                if (ismatch)
-                {
-                    filteredFiles.Add((file.ID, file.Name));
-                }
-            }
-
-            foreach(var match in filteredFiles)
-            {
-                FilesListBox_Preview.Items.Add(match.Name);
-
-            }
-
-            filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
-
-            
+                Filter(w, h);
+            }            
         }
 
         private void FilesListBox_Preview_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -469,12 +474,6 @@ namespace fileCrawlerWPF
             ClearSelectedFileInformation();
             UpdateAllFilesListBox();
         }
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
 
         #endregion
     }
