@@ -95,7 +95,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=OneWay}" Width="0.2*"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" Width="*"/>
-                <DataGridTextColumn Header="Path" Binding="{Binding Path, Mode=OneWay}" Width="0.3*"/>
+                <DataGridTextColumn Header="Path" Binding="{Binding Path, Mode=OneWay}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="ComputeHashBtn" Content="Get File Hash" HorizontalAlignment="Left" Margin="549,40,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="ComputeHashBtn_Click" Grid.Row="1" Height="22"/>

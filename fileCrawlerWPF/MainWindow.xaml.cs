@@ -1,36 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 
 namespace fileCrawlerWPF
 {
-    struct ListViewItem
-    {
-        public Guid ID { get; set; }
-        public string Path { get; set; }
-        public string Name { get; set; }
-    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private string lastCheckedDirectory = string.Empty;
-        List<(Guid Key, string Path, string Name)> fileDirectories;
-        List<(Guid Key, string Name)> filteredFiles;
-        Dictionary<Guid, ProbeFile> fileCache;
 
+        private readonly MediaCollection media;
 
         // Illegal path characters
         readonly char[] illegal_chars = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|' };
@@ -39,89 +24,52 @@ namespace fileCrawlerWPF
         public MainWindow()
         {
             InitializeComponent();
-            fileCache = new Dictionary<Guid, ProbeFile>();
-            filteredFiles = new List<(Guid Key, string Name)>();
-            fileDirectories = new List<(Guid, string, string)>();
-        }        
+
+            media = new MediaCollection();
+        }
+
+        // ItemsSource="{Binding Source=ListViewDirectories}"
+        public List<ListViewItem> ListViewDirectories
+        {  
+            get
+            {
+                return media.Directories.
+                    Select(x => new ListViewItem { ID = x.Key, Name = x.Name, Path = x.Path }).
+                    ToList();
+            }
+        }
+
+        private ListViewItem? SelectedItem
+        {
+            get
+            {
+                try { return (ListViewItem)AllFilesListBox.SelectedItem; }
+                catch(InvalidCastException)
+                {
+                    return null;
+                }                
+            }
+        }
 
         public ProbeFile SelectedFile { get; set; }
         public ProbeFile SelectedFilterFile { get; set; }
-        public int TotalFilesCount { get { return fileDirectories.Count(); } }
-
-        private void ProcessDirectory(string path)
-        {
-            if (fileDirectories.Any(x => x.Path == path))
-                return;
-
-            try
-            {
-                using (new WaitCursor())
-                {
-                    if (File.Exists(path))
-                    {
-                        if (!fileDirectories.Any(x => x.Path == path))
-                            fileDirectories.Add((Guid.NewGuid(), path, Path.GetFileName(path)));
-                    }                        
-                    else if (Directory.Exists(path))
-                    {
-                        var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-                        files.ToList().ForEach(x =>
-                        {
-                            if (!fileDirectories.Any(y => y.Path == x))
-                                fileDirectories.Add((Guid.NewGuid(), x, Path.GetFileName(x)));
-                        });
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
-            lastCheckedDirectory = path;
-            totalFilesCount.Text = fileDirectories.Count.ToString();
-            UpdateAllFilesListBox();
-        }
-
-        private void CullNonVideoFiles()
-        {
-            // work out which keys belong to non video files
-            var keys_to_remove = fileCache.Where(entry => entry.Value.videoCodec.codecType != "video")
-                                                               .Select(entry => entry.Key);
-
-            // remove the non-video entries from the dictionary. 
-            foreach (var k in keys_to_remove)
-            {
-                fileCache.Remove(k);
-                fileDirectories.RemoveAt(fileDirectories.FindIndex(x => x.Key == k));
-            }
-        }
 
         private void UpdateAllFilesListBox()
         {
             AllFilesListBox.Items.Clear();
 
-            foreach (var dir in fileDirectories)
+            foreach (var dir in media.Directories)
             {
                 AllFilesListBox.Items.Add(new ListViewItem { ID = dir.Key, Path = dir.Path, Name = dir.Name });
-            }
-        }
-
-        private void CacheAll()
-        {
-            foreach (ListViewItem item in AllFilesListBox.Items)
-            {
-                if (!fileCache.ContainsKey(item.ID))
-                    fileCache.Add(item.ID, new ProbeFile(item.Path, item.ID));
             }
         }
 
         private void Filter(int w, int h)
         {
             // first needs to complete the cache
-            CacheAll();
+            media.CacheAll();
 
-            foreach (var file in fileCache.Values)
+            foreach (var file in media.CachedFiles)
             {
                 bool ismatch = true;
                 if ((bool)fResChecked.IsChecked)
@@ -156,11 +104,11 @@ namespace fileCrawlerWPF
                 }
                 if (ismatch)
                 {
-                    filteredFiles.Add((file.ID, file.Name));
+                    media.FilteredFiles.Add((file.ID, file.Name));
                 }
             }
 
-            foreach (var match in filteredFiles)
+            foreach (var match in media.FilteredFiles)
             {
                 FilesListBox_Preview.Items.Add(match.Name);
 
@@ -263,8 +211,6 @@ namespace fileCrawlerWPF
         #region Events
         private void ScanFolderBtn_Click(object sender, RoutedEventArgs e)
         {
-            string path = null;
-
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 dialog.SelectedPath = lastCheckedDirectory;
@@ -272,17 +218,16 @@ namespace fileCrawlerWPF
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
-                    path = dialog.SelectedPath;
+                    string path = dialog.SelectedPath;
+                    media.ProcessDirectory(path);
                 }
             }
 
-            ProcessDirectory(path);
+            UpdateAllFilesListBox();
         }
 
         private void ScanFileBtn_Click(object sender, RoutedEventArgs e)
         {
-            string path = null;
-
             using (var dialog = new System.Windows.Forms.OpenFileDialog())
             {
                 dialog.InitialDirectory = lastCheckedDirectory;
@@ -290,11 +235,11 @@ namespace fileCrawlerWPF
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
                 {
-                    path = dialog.FileName;
+                    string path = dialog.FileName;
+                    media.ProcessDirectory(path);
                 }
             }
-
-            ProcessDirectory(path);
+            UpdateAllFilesListBox();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -324,23 +269,19 @@ namespace fileCrawlerWPF
 
             if (AllFilesListBox.SelectedIndex == -1) return;
 
-            var lv = (ListViewItem)AllFilesListBox.SelectedItem;
+            var lv = SelectedItem;
 
-            if (!fileCache.ContainsKey(lv.ID))
-            {
-                var pf = new ProbeFile(lv.Path, lv.ID);
-                fileCache.Add(pf.ID, pf);
-            }
+            if (!lv.HasValue)
+                return;
 
-            if (fileCache.TryGetValue(lv.ID, out ProbeFile file))
-                SelectedFile = file;
+            var pf = media.GetFileFromCache(lv.Value);
 
+            SelectedFile = pf;
 
             previewHash.Clear();
             previewHash.IsEnabled = false;
 
             var item = SelectedFile;
-
             previewName.Text = item.Name;
             previewPath.Text = item.Path;
             previewResol.Text = item.Resolution;
@@ -355,7 +296,7 @@ namespace fileCrawlerWPF
         {
             if (FilesListBox_Preview.Items.Count < 1) return;
 
-            string writeToPath = @"results.txt";
+            const string writeToPath = @"results.txt";
             exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
             exportTextLabel.Visibility = Visibility.Visible;
 
@@ -382,12 +323,12 @@ namespace fileCrawlerWPF
             }
 
             FilesListBox_Preview.Items.Clear();
-            filteredFiles.Clear();
+            media.FilteredFiles.Clear();
 
             using (new WaitCursor())
             {
                 Filter(w, h);
-            }            
+            }
         }
 
         private void FilesListBox_Preview_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -397,12 +338,11 @@ namespace fileCrawlerWPF
 
             int index = FilesListBox_Preview.SelectedIndex;
 
-            var selectedFilterFile = filteredFiles.ElementAt(index);
-            fileCache.TryGetValue(selectedFilterFile.Key, out ProbeFile file);
+            var file = media.GetByIndex(index);
 
-            if(file is null)
+            if (file is null)
             {
-                MessageBox.Show($"Unable to find {selectedFilterFile.Key} in {nameof(fileCache)}");
+                MessageBox.Show($"Unable to find file in cache");
                 return;
             }
 
@@ -469,8 +409,7 @@ namespace fileCrawlerWPF
 
         private void MenuItemClearTopResults_Click(object sender, RoutedEventArgs e)
         {
-            fileCache.Clear();
-            fileDirectories.Clear();
+            media.Directories.Clear();
             ClearSelectedFileInformation();
             UpdateAllFilesListBox();
         }

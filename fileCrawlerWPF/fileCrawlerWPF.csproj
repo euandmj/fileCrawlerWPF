@@ -113,6 +113,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FileAliases.cs" />
+    <Compile Include="ListViewItem.cs" />
+    <Compile Include="MediaCollection.cs" />
     <Compile Include="WaitCursor.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -168,5 +170,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
