@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:fileCrawlerWPF.Ctrls"
         xmlns:extToolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:fileCrawlerWPF"
         xmlns:Forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms" x:Class="fileCrawlerWPF.MainWindow"
@@ -22,10 +23,14 @@
         <Button x:Name="ScanFolderBtn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,172.333" Height="25" Width="96" Click="ScanFolderBtn_Click" Grid.Column="1"/>
         <Button x:Name="ScanFileBtn" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,0"  VerticalAlignment="Top" Width="96" Height="25" Click="ScanFileBtn_Click" Grid.ColumnSpan="2"/>
 
-        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
-            <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
-        </GroupBox>
 
+
+        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
+
+            <controls:ctlFileInformation ProbeFile="{Binding XPath=SelectedFile}" Margin="188,108,83,88"/>
+            
+        </GroupBox>
+        <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
         <GroupBox Header="Filters" HorizontalAlignment="Left" Height="138" Margin="10,139,0,0" VerticalAlignment="Top" Width="698" FontSize="18" FontStyle="Italic" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="#FF487EB0"/>
         <Label Content="Resolution" HorizontalAlignment="Left" Margin="18,174.667,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Height="29" Width="75" />
         <TextBox x:Name="fWidth" HorizontalAlignment="Left" Height="23" Margin="0,177.667,0,0" TextWrapping="Wrap" Text="1920" VerticalAlignment="Top" Width="50" TextAlignment="Center" Grid.Row="1" ToolTip="Specify a minimum resolution" Grid.Column="1"/>
