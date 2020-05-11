@@ -112,14 +112,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Ctrls\ctlFileInformation.xaml.cs">
+    <Compile Include="Controls\FilterControl.xaml.cs">
+      <DependentUpon>FilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ctlFileInformation.xaml.cs">
       <DependentUpon>ctlFileInformation.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileAliases.cs" />
     <Compile Include="ListViewItem.cs" />
     <Compile Include="MediaCollection.cs" />
     <Compile Include="WaitCursor.cs" />
-    <Page Include="Ctrls\ctlFileInformation.xaml">
+    <Page Include="Controls\FilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ctlFileInformation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

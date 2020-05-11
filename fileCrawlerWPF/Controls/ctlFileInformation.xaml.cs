@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace fileCrawlerWPF.Ctrls
+namespace fileCrawlerWPF.Controls
 {
     /// <summary>
     /// Interaction logic for ctlFileInformation.xaml
