@@ -3,11 +3,72 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              xmlns:local="clr-namespace:fileCrawlerWPF.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="300">
-    <Grid>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Path=FileName}" VerticalAlignment="Top" Width="77" MouseDoubleClick="TextBox_MouseDoubleClick"/>
+             d:DesignHeight="400" d:DesignWidth="450">
+    <Grid Background="Transparent">
 
+        <Image Height="150" Width="150" x:Name="imgThumbnail" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="110,42,190,208"/>
+        <Button x:Name="btnOpenFile" Width="35" Height="36" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Margin="343,119,72,245" AutomationProperties.HelpText="Open this file">
+            <Image Source="/Content/file.png" Width="35"/>
+        </Button>
+        <Button x:Name="btnOpenFolder" Width="35" Height="35" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Margin="343,160,72,205" AutomationProperties.HelpText="Open containing folder" >
+            <Image Source="/Content/folder.png" Width="35"/>
+        </Button>
+
+        <GroupBox x:Name="groupBox" Header="GroupBox" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="450" Margin="0,1,0,-1">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin" Value="5 0 0 0"/>
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize" Value="8"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <StackPanel Orientation="Vertical">
+                    <Label Content="File Name"/>
+                    <TextBox x:Name="txtFileName" Text="{Binding XPath=Probefile.Name}" IsReadOnly="True" Width="430" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Path"/>
+                    <TextBox x:Name="txtPath" IsReadOnly="True" Width="430" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Resolution"/>
+                    <TextBox x:Name="txtResolution" IsReadOnly="True" Width="100" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Frame Rate"/>
+                    <TextBox x:Name="txtFrameRate" IsReadOnly="True" Width="100" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Video Codec"/>
+                    <TextBox x:Name="txtVCodec" IsReadOnly="True" Width="100" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Audio Codec"/>
+                    <TextBox x:Name="txtACodec" IsReadOnly="True" Width="100" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="File Size"/>
+                    <TextBox x:Name="txtFileSize" IsReadOnly="True" Width="100" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5 5 0 0">
+                    <Image x:Name="imgHashCalculate" Source="/Content/calculator.jpg" Width="13" MouseDown="imgHashCalculate_MouseDown" />
+                    <xctk:WatermarkTextBox x:Name="txtHash" IsReadOnly="True" Watermark="Click the icon to calculate this file's hash." Width="225" Height="22"/>
+                </StackPanel>
+
+            </StackPanel>
+        </GroupBox>
     </Grid>
 </UserControl>

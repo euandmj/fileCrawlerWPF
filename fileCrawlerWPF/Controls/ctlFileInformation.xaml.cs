@@ -28,12 +28,18 @@ namespace fileCrawlerWPF.Controls
         public ctlFileInformation()
         {
             InitializeComponent();
+
         }
 
 
-        public string FileName { get { return ProbeFile.Name; } set { } }
+        
 
         private void TextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void imgHashCalculate_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
         }

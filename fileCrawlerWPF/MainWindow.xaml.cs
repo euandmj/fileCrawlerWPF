@@ -119,6 +119,7 @@ namespace fileCrawlerWPF
 
         private void ClearSelectedFileInformation()
         {
+            /*
             previewName.Clear();
             previewPath.Clear();
             previewResol.Clear();
@@ -130,6 +131,7 @@ namespace fileCrawlerWPF
             previewHash.Clear();
             previewHash.IsEnabled = false;
             thumbnail.Source = null;
+            */
         }
 
         private void ClearPreviewFileInformation()
@@ -244,14 +246,17 @@ namespace fileCrawlerWPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            /*
             if (previewPath.Text == "")
                 return;
 
             Process.Start(previewPath.Text);
+            */
         }
 
         private void openFolderBtn_Click(object sender, RoutedEventArgs e)
         {
+            /*
             if (previewPath.Text == "")
                 return;
             string txt = previewPath.Text;
@@ -259,6 +264,7 @@ namespace fileCrawlerWPF
 
 
             Process.Start(txt);
+            */
         }
 
         private void AllFilesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -278,6 +284,8 @@ namespace fileCrawlerWPF
 
             SelectedFile = pf;
 
+
+            /*
             previewHash.Clear();
             previewHash.IsEnabled = false;
 
@@ -290,6 +298,7 @@ namespace fileCrawlerWPF
             previewAudioCodec.Text = item.AudioCodec;
             previewFileSize.Text = item.FileSize;
             thumbnail.Source = item.Thumbnail;
+            */
         }
 
         private void ScanBttn_Copy_Click(object sender, RoutedEventArgs e)
@@ -383,8 +392,8 @@ namespace fileCrawlerWPF
                 if (SelectedFile.Hash is null)
                     SelectedFile.ComputeHash();
             }
-            previewHash.IsEnabled = true;
-            previewHash.Text = "#" + SelectedFile.HashAsHex;
+            //previewHash.IsEnabled = true;
+            //previewHash.Text = "#" + SelectedFile.HashAsHex;
         }
 
         private void filterReset_Click(object sender, RoutedEventArgs e)

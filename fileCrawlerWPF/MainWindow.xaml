@@ -20,16 +20,10 @@
             <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
 
+
+
         <Button x:Name="ScanFolderBtn" Content="Select Folder" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,172.333" Height="25" Width="96" Click="ScanFolderBtn_Click" Grid.Column="1"/>
         <Button x:Name="ScanFileBtn" Content="Select File" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" Margin="10,36,0,0"  VerticalAlignment="Top" Width="96" Height="25" Click="ScanFileBtn_Click" Grid.ColumnSpan="2"/>
-
-
-
-        <GroupBox Header="File Information" HorizontalAlignment="Left" Height="297" Margin="195,42,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.RowSpan="2" BorderBrush="#FF487EB0">
-
-            <controls:ctlFileInformation ProbeFile="{Binding XPath=SelectedFile}" Margin="188,108,83,88"/>
-            
-        </GroupBox>
         <Image x:Name="thumbnail" HorizontalAlignment="Left" Height="130" Margin="150,103,0,0" VerticalAlignment="Top" Width="151"/>
         <GroupBox Header="Filters" HorizontalAlignment="Left" Height="138" Margin="10,139,0,0" VerticalAlignment="Top" Width="698" FontSize="18" FontStyle="Italic" Grid.ColumnSpan="3" Grid.Row="1" BorderBrush="#FF487EB0"/>
         <Label Content="Resolution" HorizontalAlignment="Left" Margin="18,174.667,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Height="29" Width="75" />
@@ -50,32 +44,15 @@
         <CheckBox x:Name="fFramesChecked" Content="" HorizontalAlignment="Left" Margin="412,180.667,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="15"/>
         <Button x:Name="FilterApplyButton" Content="Apply" HorizontalAlignment="Left" Margin="97.667,251.667,0,0" VerticalAlignment="Top" Width="74" Click="FilterApplyButton_Click" Grid.Row="1" Grid.Column="2" Height="20"/>
         <ListBox x:Name="FilesListBox_Preview" HorizontalAlignment="Left" Height="280" Margin="10,282,0,0" VerticalAlignment="Top" Width="700" Grid.ColumnSpan="3" SelectionChanged="FilesListBox_Preview_SelectionChanged" Grid.Row="1" BorderBrush="#FF487EB0"/>
-        <Label Content="File Name" HorizontalAlignment="Left" Margin="207,72,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
-
-        <TextBox x:Name="previewName"  HorizontalAlignment="Left" Height="22" Margin="210,87,0,0" TextWrapping="Wrap" Text="{Binding SelectedFile.Name}" VerticalAlignment="Top" Width="430" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Full Path" HorizontalAlignment="Left" Margin="207,112,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
-        <TextBox x:Name="previewPath" HorizontalAlignment="Left" Height="35" Margin="210,127,0,0" TextWrapping="Wrap" Text="{Binding SelectedFile.Path}" VerticalAlignment="Top" Width="430" IsReadOnly="True" FontSize="9" Grid.Column="2"/>
-        <Label Content="Resolution" HorizontalAlignment="Left" Margin="207,157,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
-        <TextBox x:Name="previewResol" HorizontalAlignment="Left" Height="22" Margin="210,172,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Frame Rate" HorizontalAlignment="Left" Margin="207,190,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
-        <TextBox x:Name="previewFPS" HorizontalAlignment="Left" Height="22" Margin="210,205,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2"/>
-        <Label Content="Video Codec" HorizontalAlignment="Left" Margin="206.667,222,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.RowSpan="2" Height="21"/>
-        <TextBox x:Name="previewVidCodec" HorizontalAlignment="Left" Height="22" Margin="210,6,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="Audio Codec" HorizontalAlignment="Left" Margin="207,25,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
-        <TextBox x:Name="previewAudioCodec" HorizontalAlignment="Left" Height="22" Margin="210,40,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <TextBox x:Name="previewFileSize" HorizontalAlignment="Left" Height="22" Margin="210,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True" Grid.Column="2" Grid.Row="1"/>
-        <Label Content="File Size" HorizontalAlignment="Left" Margin="207,57,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Grid.Row="1" Height="21"/>
 
 
         <Label Content="Total Files Found" HorizontalAlignment="Left" Margin="80.667,28,0,0" VerticalAlignment="Top" Width="68" FontSize="8" Grid.Column="2" Height="21"/>
         <TextBox x:Name="totalFilesCount" Text="{Binding TotalFilesCount}" HorizontalAlignment="Left" Height="22" Margin="81.667,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="90" IsReadOnly="True" Grid.Column="2"/>
         <Label x:Name="filterMatches" Content="Total Matches:" HorizontalAlignment="Left" Margin="151,226.667,0,0" VerticalAlignment="Top" Width="99" FontSize="11" Grid.Row="1" Grid.Column="1" Height="25"/>
         <Button x:Name="filterReset" Content="Clear Results" HorizontalAlignment="Left" Margin="96.667,226.667,0,0" VerticalAlignment="Top" Width="75" Click="filterReset_Click" Grid.Row="1" Grid.Column="2" Height="20"/>
-        <Button x:Name="openFileBtn" Content="Open File" HorizontalAlignment="Left" Margin="549,16,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="Button_Click" Grid.Row="1" Height="20"/>
         <TextBox x:Name="fName" HorizontalAlignment="Left" Height="23" Margin="231,199.667,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="170" TextAlignment="Center" Grid.Row="1" Grid.Column="1"/>
         <Label Content="Name" HorizontalAlignment="Left" Margin="151,195.667,0,0" VerticalAlignment="Top" FontSize="14" Grid.Row="1" Grid.Column="1" Height="29" Width="47"/>
         <CheckBox x:Name="fNameChecked" Content="" HorizontalAlignment="Left" Margin="412,203.667,0,0" VerticalAlignment="Top" Width="16" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Height="15"/>
-        <Button x:Name="openFolderBtn" Content="Open Folder" HorizontalAlignment="Left" Margin="549,223,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="openFolderBtn_Click" Grid.RowSpan="2" Height="20"/>
         <GroupBox Header="File Information" HorizontalAlignment="Left" Height="422" Margin="195,140,0,0" VerticalAlignment="Top" Width="450" FontSize="18" FontStyle="Italic" Grid.Column="2" Grid.Row="1" BorderBrush="#FF487EB0">
             <Image x:Name="thumbnail1" HorizontalAlignment="Left" Height="150" Margin="214,152,0,0" VerticalAlignment="Top" Width="152" Stretch="UniformToFill"/>
         </GroupBox>
@@ -103,8 +80,6 @@
                 <DataGridTextColumn Header="Path" Binding="{Binding Path, Mode=OneWay}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="ComputeHashBtn" Content="Get File Hash" HorizontalAlignment="Left" Margin="549,40,0,0" VerticalAlignment="Top" Width="91" Grid.Column="2" Click="ComputeHashBtn_Click" Grid.Row="1" Height="22"/>
-        <TextBox x:Name="previewHash" HorizontalAlignment="Left" Height="22" Margin="335,73,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="305" IsReadOnly="True" Grid.Column="2" Grid.Row="1" IsEnabled="False"/>
         <ComboBox x:Name="framesCombox" HorizontalAlignment="Left" Margin="231,176.667,0,0" VerticalAlignment="Top" Width="104" Height="21" SelectedIndex="2" Grid.Row="1" Grid.Column="1">
             <Label Content="0-30"/>
             <Label Content="30-60"/>
@@ -125,5 +100,8 @@
                 <MenuItem x:Name="MenuItemRefresh" Header="Clear Filter Results" Click="MenuItemRefresh_Click"/>
             </MenuItem>
         </Menu>
+        <controls:ctlFileInformation ProbeFile="{Binding XPath=SelectedFile}" Margin="206.667,3,41.667,516" Grid.Column="2" Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5">
+            
+        </controls:ctlFileInformation>
     </Grid>
 </Window>
