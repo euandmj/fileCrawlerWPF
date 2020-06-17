@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="fileCrawlerWPF.Controls.FileInformation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="450">
+    <Grid Background="Transparent">
+
+        
+
+        <GroupBox x:Name="groupBox" Header="{Binding XPath=Title}" HorizontalAlignment="Left" Height="Auto" VerticalAlignment="Top" Width="Auto">
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin" Value="5 0 0 0"/>
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize" Value="8"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <StackPanel Orientation="Vertical">
+                    <Label Content="File Name"/>
+                    <TextBox x:Name="txtFileName" Text="{Binding Probefile.Name}" IsReadOnly="True" Width="430" Height="22"/>
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="Path"/>
+                    <TextBox x:Name="txtPath" Text="{Binding Probefile.Path}" IsReadOnly="True" Width="430" Height="22"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Resolution"/>
+                        <TextBox x:Name="txtResolution" IsReadOnly="True" Width="100" Height="22"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Frame Rate"/>
+                        <TextBox x:Name="txtFrameRate" IsReadOnly="True" Width="100" Height="22"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Video Codec"/>
+                        <TextBox x:Name="txtVCodec" IsReadOnly="True" Width="100" Height="22"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="Audio Codec"/>
+                        <TextBox x:Name="txtACodec" IsReadOnly="True" Width="100" Height="22"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="File Size"/>
+                        <TextBox x:Name="txtFileSize" IsReadOnly="True" Width="100" Height="22"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5 15 0 0">
+                        <Image x:Name="imgHashCalculate" Source="/Content/calculator.jpg" Width="13" MouseDown="imgHashCalculate_MouseDown" />
+
+                        <xctk:WatermarkTextBox 
+                            x:Name="txtHash"
+                            BorderThickness="0" 
+                            DockPanel.Dock="Left" 
+                            HorizontalAlignment="Left" 
+                            IsReadOnly="True" 
+                            Watermark="Click the icon to calculate this file's hash." 
+                            Width="225" Height="22"/>
+
+                        <Button x:Name="btnOpenFile" Width="35" Height="36" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" AutomationProperties.HelpText="Open this file" Click="btnOpenFile_Click">
+                            <Image Source="/Content/file.png" Width="35"/>
+                        </Button>
+                        <Button x:Name="btnOpenFolder" Width="35" Height="35" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" AutomationProperties.HelpText="Open containing folder" Click="btnOpenFolder_Click" >
+                            <Image Source="/Content/folder.png" Width="35"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <Image Height="150" Width="150" x:Name="imgThumbnail" />
+
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

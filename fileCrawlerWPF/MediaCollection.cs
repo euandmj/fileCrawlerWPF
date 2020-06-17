@@ -18,10 +18,12 @@ namespace fileCrawlerWPF
         public MediaCollection()
         {
             _cache = new Dictionary<Guid, ProbeFile>();
+            FilteredFiles = new List<(Guid Key, string Name)>();
+            Directories = new List<(Guid Key, string Path, string Name)>();
         }
 
-        public List<(Guid Key, string Name)> FilteredFiles { get; private set; } = new List<(Guid Key, string Name)>();
-        public List<(Guid Key, string Path, string Name)> Directories { get; private set; } = new List<(Guid Key, string Path, string Name)>();
+        public List<(Guid Key, string Name)> FilteredFiles { get; private set; } 
+        public List<(Guid Key, string Path, string Name)> Directories { get; private set; } 
 
         public int TotalFilesCount { get { return Directories.Count(); } }
         public IEnumerable<ProbeFile> CachedFiles { get => _cache.Values; }

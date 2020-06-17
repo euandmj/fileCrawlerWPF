@@ -7,6 +7,8 @@ using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Windows.Interop;
+using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace fileCrawlerWPF
 {
@@ -18,6 +20,8 @@ namespace fileCrawlerWPF
 
     public class ProbeFile : IEquatable<ProbeFile>
     {
+        public event EventHandler<EventArgs> HashCalculated;
+
         protected long size;
         protected byte[] hash;
         protected BitmapSource thumbnail;
@@ -25,7 +29,10 @@ namespace fileCrawlerWPF
         public string VideoCodec => videoCodec.codec;
         public string AudioCodec => audioCodec.codec;
 
-        public readonly Guid ID;
+        public readonly Guid ID; 
+        
+        public CodecInfo audioCodec;
+        public CodecInfo videoCodec;
 
         public string Name { get; set; }
         public int Width { get; set; }
@@ -33,13 +40,11 @@ namespace fileCrawlerWPF
         public float FrameRate { get; set; }
         public string Path { get; set; }
         public TimeSpan Duration { get; private set; }
-        public CodecInfo audioCodec;
-        public CodecInfo videoCodec;
-
         public string FileSize => size / 1000000 + " MB";
-        public string Hash => hash?.ToString();
+        public string Hash => hash is null ? string.Empty : hash.ToString();
         public string HashAsHex => hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
         public string Resolution => $"{Width}x{Height}";
+        public string Directory => Path.Substring(0, Path.Length - Name.Length);
 
         public BitmapSource Thumbnail
         {
@@ -127,6 +132,18 @@ namespace fileCrawlerWPF
                     hash = md5.ComputeHash(stream);
                 }
             }
+
+            HashCalculated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OpenFile()
+        {
+            Process.Start(Path);
+        }
+
+        public void OpenFolder()
+        {
+            Process.Start(Directory);
         }
 
         public void PrintInfo()

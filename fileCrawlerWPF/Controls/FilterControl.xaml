@@ -5,8 +5,90 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:fileCrawlerWPF.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="400" d:DesignWidth="450">
+    <Grid Background="Transparent">
+
+        <GroupBox x:Name="groupBox" Header="{Binding XPath=Title}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
             
+            
+            
+            
+            
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.Resources>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="Margin" Value="3 8 0 0"/>
+                    </Style> 
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="FontSize" Value="8"/>
+                        <Setter Property="HorizontalAlignment" Value="Left"/>
+                        <Setter Property="VerticalAlignment" Value="Top"/>
+                    </Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin" Value="5 0 0 0"/>
+                    </Style>
+                </Grid.Resources>
+
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="0" Grid.Column="0">
+                    <Label Content="Resolution"/>
+                    <TextBox x:Name="txtResolution" Width="65" Height="30" IsReadOnly="True"/>
+                    <CheckBox x:Name="chkResolution"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="0" Grid.Column="1">
+                    <Label Content="Framerate"/>
+                    <TextBox x:Name="txtFramerate" Width="65" Height="30" IsReadOnly="True"/>
+                    <CheckBox x:Name="chkFrameRate"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="1" Grid.Column="0">
+                    <Label Content="Video Codec"/>
+                    <TextBox x:Name="txtVCodec" Width="65" Height="30" IsReadOnly="True"/>
+                    <CheckBox x:Name="chkVCodec"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="1" Grid.Column="1">
+                    <Label Content="Name"/>
+                    <TextBox x:Name="txtName" Width="65" Height="30" IsReadOnly="True"/>
+                    <CheckBox x:Name="chkName"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="2" Grid.Column="0">
+                    <Label Content="Audio Codec"/>
+                    <TextBox x:Name="txtACodec" Width="65" Height="30" IsReadOnly="True"/>
+                    <CheckBox x:Name="chkACodec"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="2" Grid.Column="0">
+                    <Label Content="{Binding TotalMatches}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="2" Grid.Column="2">
+                    <Button Content="Clear" Height="20" Width="50"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>            
     </Grid>
 </UserControl>

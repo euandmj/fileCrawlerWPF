@@ -51,7 +51,7 @@ namespace fileCrawlerWPF
             }
         }
 
-        public ProbeFile SelectedFile { get; set; }
+        // @todo replace with control
         public ProbeFile SelectedFilterFile { get; set; }
 
         private void UpdateAllFilesListBox()
@@ -66,55 +66,55 @@ namespace fileCrawlerWPF
 
         private void Filter(int w, int h)
         {
-            // first needs to complete the cache
-            media.CacheAll();
+            //// first needs to complete the cache
+            //media.CacheAll();
 
-            foreach (var file in media.CachedFiles)
-            {
-                bool ismatch = true;
-                if ((bool)fResChecked.IsChecked)
-                {
-                    ismatch &= file.Width >= w && file.Height >= h;
-                }
-                if ((bool)fVCodecChecked.IsChecked)
-                {
-                    // is the entered codec an alias?
-                    if (IsTargetAnAlias(fVidCodec.Text.ToLower(), out string t))
-                        ismatch &= file.videoCodec.codec == t;
-                    else
-                        ismatch &= file.videoCodec.codec == fVidCodec.Text.ToLower();
-                }
-                if ((bool)fACodecChecked.IsChecked)
-                {
-                    ismatch &= file.AudioCodec == fAudCodec.Text.ToLower();
-                }
-                if ((bool)fDurChecked.IsChecked)
-                {
-                    TimeSpan ts = TimeSpan.Parse(fDur.Text);
-                    ismatch &= ts == file.Duration;
-                }
-                if ((bool)fFramesChecked.IsChecked)
-                {
-                    ismatch &= FrameratesFilter(framesCombox.SelectedIndex, file.FrameRate);
-                }
-                if ((bool)fNameChecked.IsChecked)
-                {
-                    // ismatch &= file.Name.ToLower().Contains(fName.Text.ToLower());
-                    ismatch &= IsSearchNameMatch(fName.Text.ToLower(), file.Name.ToLower());
-                }
-                if (ismatch)
-                {
-                    media.FilteredFiles.Add((file.ID, file.Name));
-                }
-            }
+            //foreach (var file in media.CachedFiles)
+            //{
+            //    bool ismatch = true;
+            //    if ((bool)fResChecked.IsChecked)
+            //    {
+            //        ismatch &= file.Width >= w && file.Height >= h;
+            //    }
+            //    if ((bool)fVCodecChecked.IsChecked)
+            //    {
+            //        // is the entered codec an alias?
+            //        if (IsTargetAnAlias(fVidCodec.Text.ToLower(), out string t))
+            //            ismatch &= file.videoCodec.codec == t;
+            //        else
+            //            ismatch &= file.videoCodec.codec == fVidCodec.Text.ToLower();
+            //    }
+            //    if ((bool)fACodecChecked.IsChecked)
+            //    {
+            //        ismatch &= file.AudioCodec == fAudCodec.Text.ToLower();
+            //    }
+            //    if ((bool)fDurChecked.IsChecked)
+            //    {
+            //        TimeSpan ts = TimeSpan.Parse(fDur.Text);
+            //        ismatch &= ts == file.Duration;
+            //    }
+            //    if ((bool)fFramesChecked.IsChecked)
+            //    {
+            //        ismatch &= FrameratesFilter(framesCombox.SelectedIndex, file.FrameRate);
+            //    }
+            //    if ((bool)fNameChecked.IsChecked)
+            //    {
+            //        // ismatch &= file.Name.ToLower().Contains(fName.Text.ToLower());
+            //        ismatch &= IsSearchNameMatch(fName.Text.ToLower(), file.Name.ToLower());
+            //    }
+            //    if (ismatch)
+            //    {
+            //        media.FilteredFiles.Add((file.ID, file.Name));
+            //    }
+            //}
 
-            foreach (var match in media.FilteredFiles)
-            {
-                FilesListBox_Preview.Items.Add(match.Name);
+            //foreach (var match in media.FilteredFiles)
+            //{
+            //    FilesListBox_Preview.Items.Add(match.Name);
 
-            }
+            //}
 
-            filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
+            //filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
         }
 
         private void ClearSelectedFileInformation()
@@ -136,30 +136,6 @@ namespace fileCrawlerWPF
 
         private void ClearPreviewFileInformation()
         {
-            FilesListBox_Preview.Items.Clear();
-            // text fields
-            fWidth.Text = "1920";
-            fHeight.Text = "1080";
-            fVidCodec.Clear();
-            fAudCodec.Clear();
-            fName.Clear();
-
-            // check boxes
-            fResChecked.IsChecked = false;
-            fVCodecChecked.IsChecked = false;
-            fACodecChecked.IsChecked = false;
-            fFramesChecked.IsChecked = false;
-            fNameChecked.IsChecked = false;
-
-            // file info fields
-            previewName_Copy.Clear();
-            previewPath_Copy.Clear();
-            previewResol_Copy.Clear();
-            previewFPS_Copy.Clear();
-            previewVidCodec_Copy.Clear();
-            previewAudioCodec_Copy.Clear();
-            previewFileSize_Copy.Clear();
-            thumbnail1.Source = null;
         }
 
         private bool FrameratesFilter(int index, float file_fps)
@@ -269,10 +245,6 @@ namespace fileCrawlerWPF
 
         private void AllFilesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Cannot find a subtly working method for getting cell data from a data grid or listview. 
-            // SelectedItems[0].SubItems does not exist? 
-            // This method only works without user sorting which is a minus. 
-
             if (AllFilesListBox.SelectedIndex == -1) return;
 
             var lv = SelectedItem;
@@ -280,120 +252,89 @@ namespace fileCrawlerWPF
             if (!lv.HasValue)
                 return;
 
-            var pf = media.GetFileFromCache(lv.Value);
-
-            SelectedFile = pf;
-
-
-            /*
-            previewHash.Clear();
-            previewHash.IsEnabled = false;
-
-            var item = SelectedFile;
-            previewName.Text = item.Name;
-            previewPath.Text = item.Path;
-            previewResol.Text = item.Resolution;
-            previewFPS.Text = item.FrameRate.ToString();
-            previewVidCodec.Text = item.VideoCodec;
-            previewAudioCodec.Text = item.AudioCodec;
-            previewFileSize.Text = item.FileSize;
-            thumbnail.Source = item.Thumbnail;
-            */
+            All_FileInfo.ProbeFile = media.GetFileFromCache(lv.Value);
         }
 
         private void ScanBttn_Copy_Click(object sender, RoutedEventArgs e)
         {
-            if (FilesListBox_Preview.Items.Count < 1) return;
+            //if (FilesListBox_Preview.Items.Count < 1) return;
 
-            const string writeToPath = @"results.txt";
-            exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
-            exportTextLabel.Visibility = Visibility.Visible;
+            //const string writeToPath = @"results.txt";
+            //exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
+            //exportTextLabel.Visibility = Visibility.Visible;
 
-            using (StreamWriter sw = File.CreateText(writeToPath))
-            {
-                foreach (var i in FilesListBox_Preview.Items)
-                {
-                    sw.WriteLine(i.ToString());
-                }
-            }
+            //using (StreamWriter sw = File.CreateText(writeToPath))
+            //{
+            //    foreach (var i in FilesListBox_Preview.Items)
+            //    {
+            //        sw.WriteLine(i.ToString());
+            //    }
+            //}
         }
 
         private void FilterApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(fWidth.Text, out int w))
-            {
-                MessageBox.Show("Please enter a valid numerical value for Width");
-                return;
-            }
-            if (!int.TryParse(fHeight.Text, out int h))
-            {
-                MessageBox.Show("Please enter a valid numerical value for Height");
-                return;
-            }
+            //if (!int.TryParse(fWidth.Text, out int w))
+            //{
+            //    MessageBox.Show("Please enter a valid numerical value for Width");
+            //    return;
+            //}
+            //if (!int.TryParse(fHeight.Text, out int h))
+            //{
+            //    MessageBox.Show("Please enter a valid numerical value for Height");
+            //    return;
+            //}
 
-            FilesListBox_Preview.Items.Clear();
-            media.FilteredFiles.Clear();
+            //FilesListBox_Preview.Items.Clear();
+            //media.FilteredFiles.Clear();
 
-            using (new WaitCursor())
-            {
-                Filter(w, h);
-            }
+            //using (new WaitCursor())
+            //{
+            //    Filter(w, h);
+            //}
         }
 
         private void FilesListBox_Preview_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FilesListBox_Preview.SelectedIndex == -1)
-                return;
+            //if (FilesListBox_Preview.SelectedIndex == -1)
+            //    return;
 
-            int index = FilesListBox_Preview.SelectedIndex;
+            //int index = FilesListBox_Preview.SelectedIndex;
 
-            var file = media.GetByIndex(index);
+            //var file = media.GetByIndex(index);
 
-            if (file is null)
-            {
-                MessageBox.Show($"Unable to find file in cache");
-                return;
-            }
+            //if (file is null)
+            //{
+            //    MessageBox.Show($"Unable to find file in cache");
+            //    return;
+            //}
 
-            previewName_Copy.Text = file.Name;
-            previewPath_Copy.Text = file.Path;
-            previewResol_Copy.Text = file.Resolution;
-            previewFPS_Copy.Text = file.FrameRate.ToString();
-            previewVidCodec_Copy.Text = file.VideoCodec;
-            previewAudioCodec_Copy.Text = file.AudioCodec;
-            previewFileSize_Copy.Text = file.FileSize;
-            thumbnail1.Source = file.Thumbnail;
+            //previewName_Copy.Text = file.Name;
+            //previewPath_Copy.Text = file.Path;
+            //previewResol_Copy.Text = file.Resolution;
+            //previewFPS_Copy.Text = file.FrameRate.ToString();
+            //previewVidCodec_Copy.Text = file.VideoCodec;
+            //previewAudioCodec_Copy.Text = file.AudioCodec;
+            //previewFileSize_Copy.Text = file.FileSize;
+            //thumbnail1.Source = file.Thumbnail;
         }
 
         private void openFolderBtn_Copy_Click(object sender, RoutedEventArgs e)
         {
 
-            if (previewPath_Copy.Text == "")
-                return;
-            string txt = previewPath_Copy.Text;
-            txt = txt.Substring(0, txt.Length - previewName_Copy.Text.Length);
-            Process.Start(txt);
+            //if (previewPath_Copy.Text == "")
+            //    return;
+            //string txt = previewPath_Copy.Text;
+            //txt = txt.Substring(0, txt.Length - previewName_Copy.Text.Length);
+            //Process.Start(txt);
         }
 
         private void openFileBtn_Copy_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(previewPath_Copy.Text))
-                return;
+            //if (string.IsNullOrEmpty(previewPath_Copy.Text))
+            //    return;
 
-            Process.Start(previewPath_Copy.Text);
-        }
-
-        private void ComputeHashBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (SelectedFile is null) return;
-
-            using (new WaitCursor())
-            {
-                if (SelectedFile.Hash is null)
-                    SelectedFile.ComputeHash();
-            }
-            //previewHash.IsEnabled = true;
-            //previewHash.Text = "#" + SelectedFile.HashAsHex;
+            //Process.Start(previewPath_Copy.Text);
         }
 
         private void filterReset_Click(object sender, RoutedEventArgs e)

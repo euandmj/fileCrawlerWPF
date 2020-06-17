@@ -115,8 +115,8 @@
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ctlFileInformation.xaml.cs">
-      <DependentUpon>ctlFileInformation.xaml</DependentUpon>
+    <Compile Include="Controls\FileInformation.xaml.cs">
+      <DependentUpon>FileInformation.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileAliases.cs" />
     <Compile Include="ListViewItem.cs" />
@@ -126,7 +126,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\ctlFileInformation.xaml">
+    <Page Include="Controls\FileInformation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -196,6 +196,9 @@
     <Resource Include="Content\calculator.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
