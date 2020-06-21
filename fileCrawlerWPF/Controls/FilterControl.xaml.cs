@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fileCrawlerWPF.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,16 @@ namespace fileCrawlerWPF.Controls
     /// </summary>
     public partial class FilterControl : UserControl
     {
+        private Filterer Filterer;
+
         public FilterControl()
         {
             InitializeComponent();
+
+            Filterer = new Filterer();
+            FilteredItems = new List<ListViewItem>();
         }
+
+        public List<ListViewItem> FilteredItems { get; set; }
     }
 }

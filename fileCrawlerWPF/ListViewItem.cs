@@ -3,6 +3,7 @@
 namespace fileCrawlerWPF
 {
     public struct ListViewItem
+        
     {
         public Guid ID { get; set; }
         public string Path { get; set; }

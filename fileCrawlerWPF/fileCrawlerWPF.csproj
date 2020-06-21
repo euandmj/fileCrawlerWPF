@@ -119,6 +119,10 @@
       <DependentUpon>FileInformation.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileAliases.cs" />
+    <Compile Include="Filters\FilterContext.cs" />
+    <Compile Include="Filters\Filterer.cs" />
+    <Compile Include="Filters\FilterUtlity.cs" />
+    <Compile Include="Filters\IFilterable.cs" />
     <Compile Include="ListViewItem.cs" />
     <Compile Include="MediaCollection.cs" />
     <Compile Include="WaitCursor.cs" />
@@ -199,6 +203,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\reset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
