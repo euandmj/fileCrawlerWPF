@@ -60,10 +60,7 @@
                       CanUserSortColumns="False"
                       IsReadOnly="True"
                       BorderBrush="#FF487EB0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID"
-                                        Binding="{Binding ID, Mode=OneWay}"
-                                        Width="0.2*" />
+                <DataGrid.Columns>                    
                     <DataGridTextColumn Header="Name"
                                         Binding="{Binding Name, Mode=OneWay}"
                                         Width="*" />
@@ -115,8 +112,7 @@
                           Click="ScanFileBtn_Click" />
                 <Separator />
                 <MenuItem x:Name="MenuItemExport"
-                          Header="Export Filter Results"
-                          Click="ScanBttn_Copy_Click" />
+                          Header="Export Filter Results" />
                 <MenuItem x:Name="MenuItemServerStatus"
                           Header="View On Github"
                           Click="MenuItemServerStatus_Click" />
@@ -127,11 +123,9 @@
             <MenuItem Header="Edit"
                       IsEnabled="True">
                 <MenuItem x:Name="MenuItemClearTopResults"
-                          Header="Clear Search"
-                          Click="MenuItemClearTopResults_Click" />
+                          Header="Clear Search" />
                 <MenuItem x:Name="MenuItemRefresh"
-                          Header="Clear Filter Results"
-                          Click="MenuItemRefresh_Click" />
+                          Header="Clear Filter Results" />
             </MenuItem>
         </Menu>
     </Grid>

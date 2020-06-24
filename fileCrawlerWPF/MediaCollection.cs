@@ -18,37 +18,13 @@ namespace fileCrawlerWPF
         public MediaCollection()
         {
             _cache = new Dictionary<Guid, ProbeFile>();
-            FilteredFiles = new List<(Guid Key, string Name)>();
             Directories = new List<(Guid Key, string Path, string Name)>();
         }
 
-        public List<(Guid Key, string Name)> FilteredFiles { get; private set; } 
         public List<(Guid Key, string Path, string Name)> Directories { get; private set; } 
 
         public int TotalFilesCount { get { return Directories.Count(); } }
-        public IEnumerable<ProbeFile> CachedFiles { get => _cache.Values; }
-
-        public ProbeFile GetByIndex(int index)
-        {
-            var (Key, _) = FilteredFiles.ElementAt(index);
-            _cache.TryGetValue(Key, out ProbeFile pf);
-
-            return pf;
-        }
-
-        public ProbeFile GetFileFromCache(ListViewItem item)
-        {
-            if (!_cache.ContainsKey(item.ID))
-            {
-                var pf = new ProbeFile(item.Path, item.ID);
-                _cache.Add(pf.ID, pf);
-                return pf;
-            }
-            else
-            {
-                return _cache[item.ID];
-            }
-        }
+        public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }              
 
         private void RemoveNonVideoFiles()
         {
@@ -66,6 +42,25 @@ namespace fileCrawlerWPF
             }
         }
 
+        public ProbeFile GetFileFromCache(ListViewItem item)
+        {
+            if (!_cache.ContainsKey(item.ID))
+            {
+                var pf = new ProbeFile(item.Path, item.ID);
+                _cache.Add(pf.ID, pf);
+                return pf;
+            }
+            else
+            {
+                return _cache[item.ID];
+            }
+        }
+
+        public ProbeFile GetFileFromCache(Guid id)
+        {
+            _cache.TryGetValue(id, out ProbeFile pf);
+            return pf;
+        }
 
         public void ProcessDirectory(string path)
         {

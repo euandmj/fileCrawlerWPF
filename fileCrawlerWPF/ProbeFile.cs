@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace fileCrawlerWPF
 {
@@ -20,8 +21,6 @@ namespace fileCrawlerWPF
 
     public class ProbeFile : IEquatable<ProbeFile>
     {
-        public event EventHandler<EventArgs> HashCalculated;
-
         protected long size;
         protected byte[] hash;
         protected BitmapSource thumbnail;
@@ -41,7 +40,6 @@ namespace fileCrawlerWPF
         public string Path { get; set; }
         public TimeSpan Duration { get; private set; }
         public string FileSize => size / 1000000 + " MB";
-        public string Hash => hash is null ? string.Empty : hash.ToString();
         public string HashAsHex => hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
         public string Resolution => $"{Width}x{Height}";
         public string Directory => Path.Substring(0, Path.Length - Name.Length);
@@ -125,6 +123,8 @@ namespace fileCrawlerWPF
 
         public void ComputeHash()
         {
+            if (!(hash is null)) return;
+
             using (var md5 = MD5.Create())
             {
                 using (var stream = File.OpenRead(Path))
@@ -132,8 +132,6 @@ namespace fileCrawlerWPF
                     hash = md5.ComputeHash(stream);
                 }
             }
-
-            HashCalculated?.Invoke(this, EventArgs.Empty);
         }
 
         public void OpenFile()

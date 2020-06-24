@@ -8,8 +8,7 @@ namespace fileCrawlerWPF.Filters
 {
     public interface IFilterable
     {
+        FilterContext Context { get; set; }
 
-
-        bool PassFilter(Predicate<bool> predicate);
     }
 }

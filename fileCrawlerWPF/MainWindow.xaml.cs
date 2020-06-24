@@ -1,4 +1,6 @@
-﻿using System;
+﻿using fileCrawlerWPF.Controls;
+using fileCrawlerWPF.Events;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,6 +17,11 @@ namespace fileCrawlerWPF
     {
         private string lastCheckedDirectory = string.Empty;
 
+
+        //private static readonly Lazy<MediaCollection> _media = 
+        //    new Lazy<MediaCollection>(() => new MediaCollection());
+        //private static MediaCollection MediaInstance { get => _media.Value; }
+
         private readonly MediaCollection media;
 
         // Illegal path characters
@@ -26,7 +33,13 @@ namespace fileCrawlerWPF
             InitializeComponent();
 
             media = new MediaCollection();
+
+
+            ctlFilter.RequestFilter += this.CtlFilter_RequestFilter;
+            ctlFilter.FileSelected += this.CtlFilter_FileSelected;
         }
+
+        
 
         // ItemsSource="{Binding Source=ListViewDirectories}"
         public List<ListViewItem> ListViewDirectories
@@ -51,16 +64,22 @@ namespace fileCrawlerWPF
             }
         }
 
-        // @todo replace with control
         public ProbeFile SelectedFilterFile { get; set; }
 
+        // @todo replace with control
         private void UpdateAllFilesListBox()
         {
             AllFilesListBox.Items.Clear();
 
             foreach (var dir in media.Directories)
             {
-                AllFilesListBox.Items.Add(new ListViewItem { ID = dir.Key, Path = dir.Path, Name = dir.Name });
+                AllFilesListBox.Items.Add(
+                    new ListViewItem 
+                    { 
+                        ID = dir.Key, 
+                        Path = dir.Path, 
+                        Name = dir.Name 
+                    });
             }
         }
 
@@ -117,73 +136,8 @@ namespace fileCrawlerWPF
             //filterMatches.Content = "Total Matches: " + FilesListBox_Preview.Items.Count;
         }
 
-        private void ClearSelectedFileInformation()
-        {
-            /*
-            previewName.Clear();
-            previewPath.Clear();
-            previewResol.Clear();
-            previewFPS.Clear();
-            previewVidCodec.Clear();
-            previewAudioCodec.Clear();
-            previewFileSize.Clear();
-            // Clear hash info. 
-            previewHash.Clear();
-            previewHash.IsEnabled = false;
-            thumbnail.Source = null;
-            */
-        }
-
         private void ClearPreviewFileInformation()
         {
-        }
-
-        private bool FrameratesFilter(int index, float file_fps)
-        {
-            // index0  = 0 - 30
-            // index1  = 30-60
-            // index2  = 60+
-            file_fps = (float)Math.Round(file_fps, 0);
-            switch (index)
-            {
-                case 0:
-                    return file_fps <= 30;
-                case 1:
-                    return file_fps > 30 && file_fps <= 60;
-                case 2:
-                    return file_fps > 60;
-                default:
-                    return false;
-            }
-        }
-
-        private bool IsSearchNameMatch(string source, string target)
-        {
-            var split = source.Split(' ');
-
-            foreach (string s in split)
-            {
-                if (target.Contains(s))
-                    return true;
-            }
-            return false;
-        }
-
-        private bool IsTargetAnAlias(string val, out string normalised)
-        {
-            normalised = string.Empty;
-            if (FileAliases.x265Aliases.Contains(val))
-            {
-                normalised = "hevc";
-                return true;
-            }
-            else if (FileAliases.x264Aliases.Contains(val))
-            {
-                normalised = "h264";
-                return true;
-            }
-            else
-                return false;
         }
 
         #region Events
@@ -220,14 +174,22 @@ namespace fileCrawlerWPF
             UpdateAllFilesListBox();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            /*
-            if (previewPath.Text == "")
-                return;
+            if(sender is FilterControl)
+            {
+                Filter_FileInfo.ProbeFile = media.GetFileFromCache(e.FileID);
+            }
+            //else if(sender is AllFilesListBox)
+            //{
+            //    All_FileInfo.ProbeFile = media.GetFileFromCache(e.FileID);
+            //}
+        }
 
-            Process.Start(previewPath.Text);
-            */
+        private void CtlFilter_RequestFilter(object sender, EventArgs e)
+        {
+            media.CacheAll();
+            ctlFilter.OnFilter(media.CachedFiles, e);
         }
 
         private void openFolderBtn_Click(object sender, RoutedEventArgs e)
@@ -253,70 +215,6 @@ namespace fileCrawlerWPF
                 return;
 
             All_FileInfo.ProbeFile = media.GetFileFromCache(lv.Value);
-        }
-
-        private void ScanBttn_Copy_Click(object sender, RoutedEventArgs e)
-        {
-            //if (FilesListBox_Preview.Items.Count < 1) return;
-
-            //const string writeToPath = @"results.txt";
-            //exportTextLabel.Content = $"Results exported to \"{writeToPath}\"";
-            //exportTextLabel.Visibility = Visibility.Visible;
-
-            //using (StreamWriter sw = File.CreateText(writeToPath))
-            //{
-            //    foreach (var i in FilesListBox_Preview.Items)
-            //    {
-            //        sw.WriteLine(i.ToString());
-            //    }
-            //}
-        }
-
-        private void FilterApplyButton_Click(object sender, RoutedEventArgs e)
-        {
-            //if (!int.TryParse(fWidth.Text, out int w))
-            //{
-            //    MessageBox.Show("Please enter a valid numerical value for Width");
-            //    return;
-            //}
-            //if (!int.TryParse(fHeight.Text, out int h))
-            //{
-            //    MessageBox.Show("Please enter a valid numerical value for Height");
-            //    return;
-            //}
-
-            //FilesListBox_Preview.Items.Clear();
-            //media.FilteredFiles.Clear();
-
-            //using (new WaitCursor())
-            //{
-            //    Filter(w, h);
-            //}
-        }
-
-        private void FilesListBox_Preview_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (FilesListBox_Preview.SelectedIndex == -1)
-            //    return;
-
-            //int index = FilesListBox_Preview.SelectedIndex;
-
-            //var file = media.GetByIndex(index);
-
-            //if (file is null)
-            //{
-            //    MessageBox.Show($"Unable to find file in cache");
-            //    return;
-            //}
-
-            //previewName_Copy.Text = file.Name;
-            //previewPath_Copy.Text = file.Path;
-            //previewResol_Copy.Text = file.Resolution;
-            //previewFPS_Copy.Text = file.FrameRate.ToString();
-            //previewVidCodec_Copy.Text = file.VideoCodec;
-            //previewAudioCodec_Copy.Text = file.AudioCodec;
-            //previewFileSize_Copy.Text = file.FileSize;
-            //thumbnail1.Source = file.Thumbnail;
         }
 
         private void openFolderBtn_Copy_Click(object sender, RoutedEventArgs e)
@@ -350,18 +248,6 @@ namespace fileCrawlerWPF
         private void MenuItemClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void MenuItemRefresh_Click(object sender, RoutedEventArgs e)
-        {
-            ClearPreviewFileInformation();
-        }
-
-        private void MenuItemClearTopResults_Click(object sender, RoutedEventArgs e)
-        {
-            media.Directories.Clear();
-            ClearSelectedFileInformation();
-            UpdateAllFilesListBox();
         }
 
         #endregion

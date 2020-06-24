@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,25 +11,16 @@ namespace fileCrawlerWPF.Controls
     {
         private ProbeFile _probeFile;
 
-        public static readonly DependencyProperty ProbeFileDependencyProperty =
-            DependencyProperty.Register("ProbeFile", typeof(ProbeFile), typeof(FileInformation), new PropertyMetadata());
-
-        
-        
-        
         public FileInformation()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
 
         ~FileInformation()
         {
-        }
-
-        private void CtlFileInformation_CalculateHash(object sender, EventArgs e)
-        {
-            txtHash.Text = _probeFile.Hash;
-        }
+        }       
 
         public string Title { get; set; }
 
@@ -43,9 +29,6 @@ namespace fileCrawlerWPF.Controls
             get => _probeFile;
             set
             {
-                if(!(_probeFile is null))
-                    _probeFile.HashCalculated -= this.CtlFileInformation_CalculateHash;
-
                 _probeFile = value;
                 UpdateView();
             }
@@ -53,8 +36,6 @@ namespace fileCrawlerWPF.Controls
 
         private void UpdateView()
         {
-            _probeFile.HashCalculated += this.CtlFileInformation_CalculateHash;
-
             txtFileName.Text    = _probeFile.Name;
             txtPath.Text        = _probeFile.Path;
             txtResolution.Text  = _probeFile.Resolution;
@@ -62,19 +43,19 @@ namespace fileCrawlerWPF.Controls
             txtVCodec.Text      = _probeFile.VideoCodec;
             txtACodec.Text      = _probeFile.AudioCodec;
             txtFileSize.Text    = _probeFile.FileSize;
-            txtHash.Text        = _probeFile.Hash;
+            txtHash.Text        = _probeFile.HashAsHex;
             imgThumbnail.Source = _probeFile.Thumbnail;
         }
 
         private void imgHashCalculate_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (_probeFile is null ||
-                _probeFile.Hash is null) return;
+            // @TODO make async
+            if (_probeFile is null) return;
 
             using (new WaitCursor())
             {
                 _probeFile.ComputeHash();
-                
+                txtHash.Text = _probeFile.HashAsHex;
             }
         }
 

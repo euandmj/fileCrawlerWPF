@@ -112,13 +112,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FilterContextCheckBox.cs" />
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FileInformation.xaml.cs">
       <DependentUpon>FileInformation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Events\FileSelectedEventArgs.cs" />
+    <Compile Include="Extensions\RichTextBoxExtensions.cs" />
     <Compile Include="FileAliases.cs" />
+    <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\FilterContext.cs" />
     <Compile Include="Filters\Filterer.cs" />
     <Compile Include="Filters\FilterUtlity.cs" />
@@ -197,17 +201,18 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\calculator.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\reset.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\calculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\filter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
