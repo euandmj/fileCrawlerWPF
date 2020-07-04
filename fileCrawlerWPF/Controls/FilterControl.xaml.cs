@@ -48,19 +48,19 @@ namespace fileCrawlerWPF.Controls
 
         private void ResetView()
         {
-            txtResolution.Clear();
-            txtFramerate.Clear();
-            txtVCodec.Clear();
-            txtACodec.Clear();
+            FilteredItems          .Clear();
+            txtResolution          .Clear();
+            txtFramerate           .Clear();
+            txtVCodec              .Clear();
+            txtACodec              .Clear();
             txtName.Document.Blocks.Clear();
 
             chkResolution.IsChecked = false;
-            chkFrameRate.IsChecked = false;
-            chkVCodec.IsChecked = false;
-            chkACodec.IsChecked = false;
-            chkName.IsChecked = false;
+            chkFrameRate.IsChecked  = false;
+            chkVCodec.IsChecked     = false;
+            chkACodec.IsChecked     = false;
+            chkName.IsChecked       = false;
 
-            FilteredItems.Clear();
         }
 
         private IReadOnlyCollection<(FilterContext, object)> GetFilterContexts()
@@ -110,10 +110,8 @@ namespace fileCrawlerWPF.Controls
         }
         private void FilterCheckChanged(object sender, RoutedEventArgs e)
         {
-            if(sender is FilterContextCheckBox checkBox)
-            {
-                _filterer.ToggleFilter(checkBox.FilterContext, checkBox.IsChecked.Value);
-            }
+            var cb = sender as FilterContextCheckBox;
+            _filterer.ToggleFilter(cb.FilterContext, cb.IsChecked.Value);
         }
 
         private void Numerical_PreviewText(object sender, TextCompositionEventArgs e)

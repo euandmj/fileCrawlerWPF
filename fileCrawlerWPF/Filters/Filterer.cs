@@ -1,38 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fileCrawlerWPF.Filters
 {
     class Filterer
     {
+        // @todo refactor Value into a struct. Then maybe into its own Wrapper?
         private readonly Dictionary<FilterContext, (bool, Func<ProbeFile, object, bool>)> _filterMap;
-        //private readonly Dictionary<FilterContext, bool> _filterEnabled;
 
         public Filterer()
         {
             _filterMap = new Dictionary<FilterContext, (bool, Func<ProbeFile, object, bool>)>();
-            //_filterEnabled = new Dictionary<FilterContext, bool>();
-
-
-
 
             InitFilterMap();
         }
-
-        //private IReadOnlyCollection<FilterContext> _EnabledFilters
-        //{
-        //    get => _filterMap
-        //        .Where(x => x.Value)
-        //        .Select(y => y.Key.Context)
-        //        .ToList();
-        //}
 
         private void InitFilterMap()
         {
@@ -89,8 +70,6 @@ namespace fileCrawlerWPF.Filters
             IReadOnlyCollection<(FilterContext, object)> filterContexts,
             IReadOnlyCollection<ProbeFile> files)
         {
-            // @todo validate that filterContexts is distinct
-
             foreach (var file in files)
             {
                 if (FilterFile(filterContexts, file))

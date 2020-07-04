@@ -1,4 +1,2 @@
-﻿refactor filter
-filter controls
-filter name regex
+﻿filter name regex
 render as treeview

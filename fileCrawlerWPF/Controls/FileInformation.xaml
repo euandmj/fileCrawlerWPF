@@ -7,6 +7,9 @@
              mc:Ignorable="d"
              d:DesignHeight="370"
              d:DesignWidth="450">
+    <UserControl.Resources>
+           
+    </UserControl.Resources>
     <Grid Background="White">
 
 
@@ -45,7 +48,7 @@
                 <StackPanel Orientation="Vertical">
                     <Label Content="File Name" />
                     <TextBox x:Name="txtFileName"
-                             Text="{Binding Path=_probeFile.Name, Mode=OneWay}"
+                             Text="{Binding FileName, Mode=OneWay}"
                              IsReadOnly="True"
                              Width="430"
                              Height="22" />
@@ -53,7 +56,7 @@
                 <StackPanel Orientation="Vertical">
                     <Label Content="Path" />
                     <TextBox x:Name="txtPath"
-                             Text="{Binding Path=_probeFile.Path}"
+                             Text="{Binding Path, Mode=OneWay}"
                              IsReadOnly="True"
                              Width="420"
                              Height="22" />
@@ -65,12 +68,14 @@
                         <TextBox x:Name="txtResolution"
                                  IsReadOnly="True"
                                  Width="100"
+                                 Text="{Binding Resolution, Mode=OneWay}"
                                  Height="22" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Frame Rate" />
                         <TextBox x:Name="txtFrameRate"
                                  IsReadOnly="True"
+                                 Text="{Binding FrameRate, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
@@ -78,6 +83,7 @@
                         <Label Content="Video Codec" />
                         <TextBox x:Name="txtVCodec"
                                  IsReadOnly="True"
+                                 Text="{Binding VideoCodec, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
@@ -85,6 +91,7 @@
                         <Label Content="Audio Codec" />
                         <TextBox x:Name="txtACodec"
                                  IsReadOnly="True"
+                                 Text="{Binding AudioCodec, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
@@ -95,44 +102,56 @@
                         <Label Content="File Size" />
                         <TextBox x:Name="txtFileSize"
                                  IsReadOnly="True"
+                                 Text="{Binding Size, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="5 15 0 0">
-                        <Image x:Name="imgHashCalculate"
-                               Source="/Content/calculator.png"
-                               Width="13"
-                               MouseDown="imgHashCalculate_MouseDown" />
 
-                        <xctk:WatermarkTextBox x:Name="txtHash"
-                                               BorderThickness="0"
-                                               DockPanel.Dock="Left"
-                                               HorizontalAlignment="Left"
-                                               IsReadOnly="True"
-                                               Watermark="Click the icon to calculate this file's hash."
-                                               Width="225"
-                                               Height="22" />
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="5 15 0 0">
+                            <Image x:Name="imgHashCalculate"
+                                   Source="/Content/calculator.png"
+                                   Width="13"
+                                   MouseDown="imgHashCalculate_MouseDown" />
 
-                        <Button x:Name="btnOpenFile"
-                                Width="35"
-                                Height="36"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                AutomationProperties.HelpText="Open this file"
-                                Click="btnOpenFile_Click">
-                            <Image Source="/Content/file.png"
-                                   Width="35" />
-                        </Button>
-                        <Button x:Name="btnOpenFolder"
-                                Width="35"
-                                Height="35"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                AutomationProperties.HelpText="Open containing folder"
-                                Click="btnOpenFolder_Click">
-                            <Image Source="/Content/folder.png"
-                                   Width="35" />
-                        </Button>
+                            <xctk:WatermarkTextBox x:Name="txtHash"
+                                                   BorderThickness="0"
+                                                   DockPanel.Dock="Left"
+                                                   HorizontalAlignment="Left"
+                                                   IsReadOnly="True"
+                                                   Text="{Binding Hash, Mode=OneWay}"
+                                                   Watermark="Click the icon to calculate this file's hash."
+                                                   Width="225"
+                                                   Height="22" />
+
+                            <Button x:Name="btnOpenFile"
+                                    Width="35"
+                                    Height="36"
+                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                    AutomationProperties.HelpText="Open this file"
+                                    Click="btnOpenFile_Click">
+                                <Image Source="/Content/file.png"
+                                       Width="35" />
+                            </Button>
+                            <Button x:Name="btnOpenFolder"
+                                    Width="35"
+                                    Height="35"
+                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                    AutomationProperties.HelpText="Open containing folder"
+                                    Click="btnOpenFolder_Click">
+                                <Image Source="/Content/folder.png"
+                                       Width="35" />
+                            </Button>
+                        </StackPanel>
+                        <ProgressBar x:Name="progresBar"
+                                     Visibility="Collapsed"
+                                     Height="10"
+                                     Width="100"
+                                     IsIndeterminate="True"/>
                     </StackPanel>
+                    
+                    
                 </StackPanel>
                 <Image Height="150"
                        Width="150"

@@ -10,6 +10,8 @@ using System.Windows.Interop;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace fileCrawlerWPF
 {
@@ -28,8 +30,8 @@ namespace fileCrawlerWPF
         public string VideoCodec => videoCodec.codec;
         public string AudioCodec => audioCodec.codec;
 
-        public readonly Guid ID; 
-        
+        public readonly Guid ID;
+
         public CodecInfo audioCodec;
         public CodecInfo videoCodec;
 
@@ -40,7 +42,7 @@ namespace fileCrawlerWPF
         public string Path { get; set; }
         public TimeSpan Duration { get; private set; }
         public string FileSize => size / 1000000 + " MB";
-        public string HashAsHex => hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
+        public string HashAsHex => hash != null ? $"#{BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant()}" : null;
         public string Resolution => $"{Width}x{Height}";
         public string Directory => Path.Substring(0, Path.Length - Name.Length);
 
@@ -55,6 +57,8 @@ namespace fileCrawlerWPF
             }
             set { thumbnail = value; }
         }
+
+        public ProbeFile() { }
 
         public ProbeFile(string path, Guid id)
         {
@@ -121,16 +125,18 @@ namespace fileCrawlerWPF
             Thumbnail = BitmapToBitmapImage(bmp);
         }
 
-        public void ComputeHash()
+        public async Task<string> ComputeHashAsync()
         {
-            if (!(hash is null)) return;
+            if (!(hash is null)) return HashAsHex;
 
             using (var md5 = MD5.Create())
+            using (var stream = File.OpenRead(Path))
             {
-                using (var stream = File.OpenRead(Path))
+                return await Task.Run(() =>
                 {
-                    hash = md5.ComputeHash(stream);
-                }
+                   hash = md5.ComputeHash(stream);
+                   return HashAsHex;
+                });
             }
         }
 
@@ -147,10 +153,10 @@ namespace fileCrawlerWPF
         public void PrintInfo()
         {
             Console.WriteLine("\n");
-            Console.WriteLine($"Info for {this.Name}" +
-                $"\nDuration: {this.Duration.ToString()}" +
-                $"\nWxH: {this.Width}x{this.Height}" +
-                $"\nFramrate: {this.FrameRate}");
+            Console.WriteLine($"Info for {Name}" +
+                $"\nDuration: {Duration}" +
+                $"\nWxH: {Width}x{Height}" +
+                $"\nFramrate: {FrameRate}");
         }
 
         public bool Equals(ProbeFile other) => Path == other.Path;

@@ -119,15 +119,14 @@
     <Compile Include="Controls\FileInformation.xaml.cs">
       <DependentUpon>FileInformation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\model\FileInfoModel.cs" />
     <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
     <Compile Include="FileAliases.cs" />
-    <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\FilterContext.cs" />
     <Compile Include="Filters\Filterer.cs" />
     <Compile Include="Filters\FilterUtlity.cs" />
-    <Compile Include="Filters\IFilterable.cs" />
-    <Compile Include="ListViewItem.cs" />
+    <Compile Include="FileDirectory.cs" />
     <Compile Include="MediaCollection.cs" />
     <Compile Include="WaitCursor.cs" />
     <Page Include="Controls\FilterControl.xaml">
