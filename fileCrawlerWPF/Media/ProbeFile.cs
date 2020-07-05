@@ -1,14 +1,15 @@
-﻿using NReco.VideoInfo;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using NReco.VideoInfo;
 using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
-using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
-using System.Drawing;
-using System.Windows.Media.Imaging;
+using System.Threading.Tasks;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
-namespace fileCrawlerWPF
+namespace fileCrawlerWPF.Media
 {
     public struct CodecInfo
     {
@@ -27,19 +28,19 @@ namespace fileCrawlerWPF
 
         public readonly Guid ID;
 
+        public CodecInfo audioCodec;
+        public CodecInfo videoCodec;
+
         public string Name { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public float FrameRate { get; set; }
         public string Path { get; set; }
         public TimeSpan Duration { get; private set; }
-        public CodecInfo audioCodec;
-        public CodecInfo videoCodec;
-
         public string FileSize => size / 1000000 + " MB";
-        public string Hash => hash?.ToString();
-        public string HashAsHex => hash != null ? BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant() : null;
+        public string HashAsHex => hash != null ? $"#{BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant()}" : null;
         public string Resolution => $"{Width}x{Height}";
+        public string Directory => Path.Substring(0, Path.Length - Name.Length);
 
         public BitmapSource Thumbnail
         {
@@ -52,6 +53,8 @@ namespace fileCrawlerWPF
             }
             set { thumbnail = value; }
         }
+
+        public ProbeFile() { }
 
         public ProbeFile(string path, Guid id)
         {
@@ -118,24 +121,38 @@ namespace fileCrawlerWPF
             Thumbnail = BitmapToBitmapImage(bmp);
         }
 
-        public void ComputeHash()
+        public async Task<string> ComputeHashAsync()
         {
+            if (!(hash is null)) return HashAsHex;
+
             using (var md5 = MD5.Create())
+            using (var stream = File.OpenRead(Path))
             {
-                using (var stream = File.OpenRead(Path))
+                return await Task.Run(() =>
                 {
-                    hash = md5.ComputeHash(stream);
-                }
+                   hash = md5.ComputeHash(stream);
+                   return HashAsHex;
+                });
             }
+        }
+
+        public void OpenFile()
+        {
+            Process.Start(Path);
+        }
+
+        public void OpenFolder()
+        {
+            Process.Start(Directory);
         }
 
         public void PrintInfo()
         {
             Console.WriteLine("\n");
-            Console.WriteLine($"Info for {this.Name}" +
-                $"\nDuration: {this.Duration.ToString()}" +
-                $"\nWxH: {this.Width}x{this.Height}" +
-                $"\nFramrate: {this.FrameRate}");
+            Console.WriteLine($"Info for {Name}" +
+                $"\nDuration: {Duration}" +
+                $"\nWxH: {Width}x{Height}" +
+                $"\nFramrate: {FrameRate}");
         }
 
         public bool Equals(ProbeFile other) => Path == other.Path;

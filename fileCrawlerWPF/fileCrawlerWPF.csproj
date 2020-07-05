@@ -112,10 +112,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="FileAliases.cs" />
-    <Compile Include="ListViewItem.cs" />
-    <Compile Include="MediaCollection.cs" />
-    <Compile Include="WaitCursor.cs" />
+    <Compile Include="Controls\FilterContextCheckBox.cs" />
+    <Compile Include="Controls\FilterControl.xaml.cs">
+      <DependentUpon>FilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FileInformation.xaml.cs">
+      <DependentUpon>FileInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\model\FileInfoModel.cs" />
+    <Compile Include="Events\FileSelectedEventArgs.cs" />
+    <Compile Include="Extensions\RichTextBoxExtensions.cs" />
+    <Compile Include="Util\FileAliases.cs" />
+    <Compile Include="Filters\FilterContext.cs" />
+    <Compile Include="Filters\Filterer.cs" />
+    <Compile Include="Filters\FilterUtlity.cs" />
+    <Compile Include="Media\FileDirectory.cs" />
+    <Compile Include="Media\MediaCollection.cs" />
+    <Compile Include="Util\WaitCursor.cs" />
+    <Page Include="Controls\FilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\FileInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,7 +145,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ProbeFile.cs" />
+    <Compile Include="Media\ProbeFile.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -170,6 +191,27 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Content\file.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Content\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\reset.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\calculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\filter.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
