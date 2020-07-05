@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fileCrawlerWPF.Media;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,12 +15,12 @@ namespace fileCrawlerWPF.Filters
         private static bool IsVideoAlias(string val, out string normalised)
         {
             normalised = string.Empty;
-            if (FileAliases.x265Aliases.Contains(val))
+            if (Util.FileAliases.x265Aliases.Contains(val))
             {
                 normalised = "hevc";
                 return true;
             }
-            else if (FileAliases.x264Aliases.Contains(val))
+            else if (Util.FileAliases.x264Aliases.Contains(val))
             {
                 normalised = "h264";
                 return true;

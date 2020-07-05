@@ -1,19 +1,15 @@
-﻿using NReco.VideoInfo;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using NReco.VideoInfo;
 using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Security.Cryptography;
-using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
-using System.Drawing;
-using System.Windows.Media.Imaging;
-using System.Windows.Interop;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Threading;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
-namespace fileCrawlerWPF
+namespace fileCrawlerWPF.Media
 {
     public struct CodecInfo
     {

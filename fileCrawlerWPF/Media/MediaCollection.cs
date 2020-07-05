@@ -1,10 +1,11 @@
-﻿using System;
+﻿using fileCrawlerWPF.Util;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-namespace fileCrawlerWPF
+namespace fileCrawlerWPF.Media
 {
     public class MediaCollection
     {

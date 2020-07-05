@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Data.SqlTypes;
 
-namespace fileCrawlerWPF
+namespace fileCrawlerWPF.Media
 {
     public struct FileDirectory
     {

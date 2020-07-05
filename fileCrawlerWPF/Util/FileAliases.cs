@@ -1,15 +1,11 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace fileCrawlerWPF
+namespace fileCrawlerWPF.Util
 {
     class FileAliases
     {
-        public static ReadOnlyCollection<string> x264Aliases =
+        public static IReadOnlyCollection<string> x264Aliases =
             new ReadOnlyCollection<string>(new[]
             {
                 "x264",
@@ -21,7 +17,7 @@ namespace fileCrawlerWPF
                 "h.264/mp4 avc"
             });
 
-        public static  ReadOnlyCollection<string> x265Aliases =
+        public static  IReadOnlyCollection<string> x265Aliases =
             new ReadOnlyCollection<string>(new[]
             {
                 "h265",

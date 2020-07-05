@@ -1,4 +1,5 @@
-﻿using System;
+﻿using fileCrawlerWPF.Media;
+using System;
 using System.Collections.Generic;
 
 namespace fileCrawlerWPF.Filters

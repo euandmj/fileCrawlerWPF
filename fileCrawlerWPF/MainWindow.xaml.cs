@@ -1,5 +1,6 @@
 ﻿using fileCrawlerWPF.Controls;
 using fileCrawlerWPF.Events;
+using fileCrawlerWPF.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

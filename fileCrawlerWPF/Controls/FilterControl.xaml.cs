@@ -1,6 +1,7 @@
 ﻿using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Extensions;
 using fileCrawlerWPF.Filters;
+using fileCrawlerWPF.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
