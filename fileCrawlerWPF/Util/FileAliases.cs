@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace fileCrawlerWPF.Util
 {
-    class FileAliases
+    static class FileAliases
     {
         public static IReadOnlyCollection<string> x264Aliases =
             new ReadOnlyCollection<string>(new[]

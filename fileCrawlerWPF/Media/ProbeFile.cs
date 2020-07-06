@@ -19,9 +19,10 @@ namespace fileCrawlerWPF.Media
 
     public class ProbeFile : IEquatable<ProbeFile>
     {
-        protected long size;
-        protected byte[] hash;
-        protected BitmapSource thumbnail;
+        protected long _size;
+        protected byte[] _hash;
+        protected BitmapSource _thumbnail;
+        protected readonly DirectoryInfo _directory;
 
         public string VideoCodec => videoCodec.codec;
         public string AudioCodec => audioCodec.codec;
@@ -31,42 +32,33 @@ namespace fileCrawlerWPF.Media
         public CodecInfo audioCodec;
         public CodecInfo videoCodec;
 
-        public string Name { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public float FrameRate { get; set; }
-        public string Path { get; set; }
-        public TimeSpan Duration { get; private set; }
-        public string FileSize => size / 1000000 + " MB";
-        public string HashAsHex => hash != null ? $"#{BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant()}" : null;
-        public string Resolution => $"{Width}x{Height}";
-        public string Directory => Path.Substring(0, Path.Length - Name.Length);
+        public string Name          => _directory.Name;
+        public string Directory     => _directory.Parent.FullName;
+        public string Path          => _directory.FullName;
+        public string FileSize      => _size / 1000000 + " MB";
+        public string Resolution    => $"{Width}x{Height}";
+        public string HashAsHex
+            => _hash != null
+            ? $"#{BitConverter.ToString(_hash).Replace("-", "").ToLowerInvariant()}"
+            : null;
 
-        public BitmapSource Thumbnail
-        {
-            get
-            {
-                if (thumbnail == null)
-                    LoadThumbnail();
-
-                return thumbnail;
-            }
-            set { thumbnail = value; }
-        }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public float FrameRate { get; private set; }
+        public TimeSpan Duration { get; private set; }        
 
         public ProbeFile() { }
 
         public ProbeFile(string path, Guid id)
-        {
-            Path = path ?? throw new ArgumentNullException($"{nameof(path)}");
+        {            
             ID = id;
-
-            Name = Path.Substring(Path.LastIndexOf('\\') + 1);
+            _directory = new DirectoryInfo(path);
 
             ReadFile();
         }
 
-        public ProbeFile(string path) : this(path, Guid.NewGuid()) { }
+        public ProbeFile(string path) 
+            : this(path, Guid.NewGuid()) { }
         
         private void ReadFile()
         {
@@ -74,7 +66,7 @@ namespace fileCrawlerWPF.Media
             {
                 FFProbe probe = new FFProbe();
                 MediaInfo info = probe.GetMediaInfo(Path);
-                size = new FileInfo(Path).Length;
+                _size = new FileInfo(Path).Length;
 
                 Duration = info.Duration;
 
@@ -118,22 +110,30 @@ namespace fileCrawlerWPF.Media
         {
             ShellFile imgfile = ShellFile.FromFilePath(Path);
             var bmp = imgfile.Thumbnail.ExtraLargeBitmap;
-            Thumbnail = BitmapToBitmapImage(bmp);
+            _thumbnail = BitmapToBitmapImage(bmp);
         }
 
         public async Task<string> ComputeHashAsync()
         {
-            if (!(hash is null)) return HashAsHex;
+            if (!(_hash is null)) return HashAsHex;
 
             using (var md5 = MD5.Create())
             using (var stream = File.OpenRead(Path))
             {
                 return await Task.Run(() =>
                 {
-                   hash = md5.ComputeHash(stream);
+                   _hash = md5.ComputeHash(stream);
                    return HashAsHex;
                 });
             }
+        }
+
+        public BitmapSource GetThumbnail()
+        {
+            if (_thumbnail == null)
+                LoadThumbnail();
+
+            return _thumbnail;
         }
 
         public void OpenFile()
@@ -144,15 +144,6 @@ namespace fileCrawlerWPF.Media
         public void OpenFolder()
         {
             Process.Start(Directory);
-        }
-
-        public void PrintInfo()
-        {
-            Console.WriteLine("\n");
-            Console.WriteLine($"Info for {Name}" +
-                $"\nDuration: {Duration}" +
-                $"\nWxH: {Width}x{Height}" +
-                $"\nFramrate: {FrameRate}");
         }
 
         public bool Equals(ProbeFile other) => Path == other.Path;
@@ -172,8 +163,10 @@ namespace fileCrawlerWPF.Media
             return base.GetHashCode();
         }
 
-        public static bool operator == (ProbeFile a, ProbeFile b) => a.Path == b.Path;
+        public static bool operator == (ProbeFile a, ProbeFile b) 
+            => a?.Path == b?.Path;
 
-        public static bool operator != (ProbeFile a, ProbeFile b) => a.Path != b.Path;
+        public static bool operator != (ProbeFile a, ProbeFile b) 
+            => a?.Path != b?.Path;
     }
 }

@@ -1,17 +1,22 @@
-﻿using System;
+﻿using fileCrawlerWPF.Media;
+using System;
 
 namespace fileCrawlerWPF.Events
 {
     public class FileSelectedEventArgs
         : EventArgs
     {
-        public readonly Guid FileID;
+        public Guid ID;
+        public readonly FileDirectory Directory;
 
         public FileSelectedEventArgs(Guid id)
         {
-            FileID = id;
+            ID = id;
         }
-
-        public delegate void FileSelectedEventHandler(object sender, FileSelectedEventArgs e);
+        
+        public FileSelectedEventArgs(FileDirectory fd)
+        {
+            Directory = fd;
+        }
     }
 }

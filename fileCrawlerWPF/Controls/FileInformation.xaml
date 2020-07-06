@@ -4,40 +4,47 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:cvtr="clr-namespace:fileCrawlerWPF.Converters"
              mc:Ignorable="d"
              d:DesignHeight="370"
-             d:DesignWidth="450">
+             Width="440">
     <UserControl.Resources>
-           
+        <ResourceDictionary>
+            <cvtr:FileNullConverter x:Key="nullConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Background="White">
 
-
+    <Grid Background="White"
+          IsEnabled="{Binding Converter={StaticResource nullConverter}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <GroupBox x:Name="groupBox"
                   Header="{Binding XPath=Title}"
-                  HorizontalAlignment="Left"
                   Height="Auto"
                   Margin="5 5 5 5"
-                  VerticalAlignment="Top"
                   Width="Auto">
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
-                    <Style TargetType="StackPanel">
-                        <Setter Property="Margin"
-                                Value="5 0 0 0" />
-                    </Style>
                     <Style TargetType="Label">
                         <Setter Property="FontSize"
                                 Value="13" />
+                        <Setter Property="FontFamily"
+                                Value="{StaticResource FontFamily}" />
                         <Setter Property="HorizontalAlignment"
                                 Value="Left" />
                         <Setter Property="VerticalAlignment"
                                 Value="Top" />
                     </Style>
                     <Style TargetType="TextBox">
-                        <Setter Property="FontSize"
-                                Value="15" />
+                        <Setter Property="IsReadOnly"
+                                Value="True" />
+                        <Setter Property="FontFamily"
+                                Value="{StaticResource FontFamily}" />
                         <Setter Property="HorizontalAlignment"
                                 Value="Left" />
                         <Setter Property="VerticalAlignment"
@@ -49,16 +56,14 @@
                     <Label Content="File Name" />
                     <TextBox x:Name="txtFileName"
                              Text="{Binding FileName, Mode=OneWay}"
-                             IsReadOnly="True"
-                             Width="430"
+                             Width="415"
                              Height="22" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label Content="Path" />
                     <TextBox x:Name="txtPath"
-                             Text="{Binding Path, Mode=OneWay}"
-                             IsReadOnly="True"
-                             Width="420"
+                             Text="{Binding Directory, Mode=OneWay}"
+                             Width="415"
                              Height="22" />
                 </StackPanel>
 
@@ -66,23 +71,23 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="Resolution" />
                         <TextBox x:Name="txtResolution"
-                                 IsReadOnly="True"
                                  Width="100"
+                                 Margin="0 0 5 0"
                                  Text="{Binding Resolution, Mode=OneWay}"
                                  Height="22" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Frame Rate" />
                         <TextBox x:Name="txtFrameRate"
-                                 IsReadOnly="True"
                                  Text="{Binding FrameRate, Mode=OneWay}"
                                  Width="100"
+                                 Margin="0 0 5 0"
                                  Height="22" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Video Codec" />
                         <TextBox x:Name="txtVCodec"
-                                 IsReadOnly="True"
+                                 Margin="0 0 5 0"
                                  Text="{Binding VideoCodec, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
@@ -90,7 +95,6 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="Audio Codec" />
                         <TextBox x:Name="txtACodec"
-                                 IsReadOnly="True"
                                  Text="{Binding AudioCodec, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
@@ -101,7 +105,6 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="File Size" />
                         <TextBox x:Name="txtFileSize"
-                                 IsReadOnly="True"
                                  Text="{Binding Size, Mode=OneWay}"
                                  Width="100"
                                  Height="22" />
@@ -128,16 +131,19 @@
                             <Button x:Name="btnOpenFile"
                                     Width="35"
                                     Height="36"
-                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                                     AutomationProperties.HelpText="Open this file"
-                                    Click="btnOpenFile_Click">
+                                    BorderThickness="0"
+                                    Background="{x:Null}"
+                                    Click="btnOpenFile_Click"
+                                    Foreground="{x:Null}">
                                 <Image Source="/Content/file.png"
                                        Width="35" />
                             </Button>
                             <Button x:Name="btnOpenFolder"
                                     Width="35"
                                     Height="35"
-                                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                                    BorderThickness="0"
+                                    Background="Transparent"
                                     AutomationProperties.HelpText="Open containing folder"
                                     Click="btnOpenFolder_Click">
                                 <Image Source="/Content/folder.png"
@@ -148,14 +154,15 @@
                                      Visibility="Collapsed"
                                      Height="10"
                                      Width="100"
-                                     IsIndeterminate="True"/>
+                                     IsIndeterminate="True" />
                     </StackPanel>
-                    
-                    
+
+
                 </StackPanel>
-                <Image Height="150"
-                       Width="150"
-                       x:Name="imgThumbnail" />
+                <Image Height="140"
+                       x:Name="imgThumbnail"
+                       Source="{Binding Image}"
+                       Margin="139,0,199,0" />
 
             </StackPanel>
         </GroupBox>

@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace fileCrawlerWPF.Media
 {
-    public class MediaCollection
+    public sealed class MediaCollection
     {
         private readonly Dictionary<Guid, ProbeFile> _cache;
 
@@ -20,41 +20,43 @@ namespace fileCrawlerWPF.Media
         public ObservableCollection<FileDirectory> Directories { get; private set; }
 
         public int TotalFilesCount { get { return Directories.Count(); } }
-        public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }              
+        public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }
 
-        //private void RemoveNonVideoFiles()
-        //{
-        //    // work out which keys belong to non video files
-        //    var keys_to_remove = _cache
-        //        .Where(entry => entry.Value.videoCodec.codecType != "video")
-        //        .Select(entry => entry.Key);
+        private void RemoveNonVideoFiles()
+        {
+            // work out which keys belong to non video files
+            var keys_to_remove = _cache
+                .Where(entry => entry.Value.videoCodec.codecType != "video")
+                .Select(entry => entry.Key);
 
-        //    // remove the non-video entries from the dictionary. 
-        //    foreach (var k in keys_to_remove)
-        //    {
-        //        _cache.Remove(k);
-        //        int index = Directories.FindIndex(x => x.Key == k);
-        //        Directories.RemoveAt(index);
-        //    }
-        //}
+            // remove the non-video entries from the dictionary. 
+            foreach (var k in keys_to_remove)
+            {
+                _cache.Remove(k);
+                int index = Directories.ToList().FindIndex(x => x.ID == k);
+                Directories.RemoveAt(index);
+            }            
+        }
 
         private ProbeFile Cache(Guid id, string path)
         {
-            var pf = new ProbeFile(path, id);
-            _cache.Add(pf.ID, pf);
-            return pf;
+            if (_cache.ContainsKey(id))
+            {
+                return _cache[id];
+            }
+            else
+            {
+                var pf = new ProbeFile(path, id);
+                _cache.Add(pf.ID, pf);
+                return pf;
+            }
         }
 
         public ProbeFile GetFileFromCache(FileDirectory item)
-            => !_cache.ContainsKey(item.ID)
-            ? Cache(item.ID, item.Path)
-            : _cache[item.ID];
+            => Cache(item.ID, item.Path);
 
         public ProbeFile GetFileFromCache(Guid id)
-        {
-            _cache.TryGetValue(id, out ProbeFile pf);
-            return pf;
-        }
+            => Cache(id, string.Empty);
 
         public void ProcessDirectory(string path)
         {
@@ -81,8 +83,11 @@ namespace fileCrawlerWPF.Media
                     }
                 }
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception)
             {
+                var logged = Directories.FirstOrDefault(x => x.Path == path);
+                if (!(logged.Name is null))
+                    Directories.Remove(logged);
                 throw;
             }
         }
@@ -91,9 +96,14 @@ namespace fileCrawlerWPF.Media
         {
             foreach (var item in Directories)
             {
-                if (!_cache.ContainsKey(item.ID))
-                    _cache.Add(item.ID, new ProbeFile(item.Path, item.ID));
+                Cache(item.ID, item.Path);
             }
+        }
+
+        public void Reset()
+        {
+            _cache.Clear();
+            Directories.Clear();
         }
     }
 }
