@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace fileCrawlerWPF.Filters
 {
-    class Filterer
+    sealed class Filterer
     {
         // @todo refactor Value into a struct. Then maybe into its own Wrapper?
         private readonly Dictionary<FilterContext, (bool, Func<ProbeFile, object, bool>)> _filterMap;

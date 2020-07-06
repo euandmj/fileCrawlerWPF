@@ -4,7 +4,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-//xmlns:fileinfo="clr-namespace:fileCrawlerWPF.Controls.model;assembly=FileInfoModel"
 
 namespace fileCrawlerWPF.Controls
 {
@@ -18,25 +17,14 @@ namespace fileCrawlerWPF.Controls
 
         public FileInformation()
         {
-            //viewModel = new FileInfoModel()
-            //_probeFile = pf;
             _viewModel = new FileInfoModel(ProbeFile);
             DataContext = _viewModel;
 
             InitializeComponent();
+
             DataContextChanged += this.FileInformation_DataContextChanged;
-            //_modelView = new FileInfoModel(ProbeFile);
-        }
-
-
-
-        private void FileInformation_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-        }
-
-        ~FileInformation()
-        {
         }       
+           
 
         public string Title { get; set; }
 
@@ -54,11 +42,25 @@ namespace fileCrawlerWPF.Controls
         private async void imgHashCalculate_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (_probeFile is null) return;
+            var currid = _probeFile.ID;
+            string hash = null;
 
-            progresBar.Visibility = Visibility.Visible ;
-            var hash = await _probeFile.ComputeHashAsync();
-            txtHash.Text = hash;
-            progresBar.Visibility = Visibility.Collapsed;
+            try
+            {
+                progresBar.Visibility = Visibility.Visible;
+                hash = await _probeFile.ComputeHashAsync();
+            }
+            catch(Exception)
+            {
+                MessageBox.Show($"Unable to calculate hash for file {_probeFile.Name}");
+            }
+            finally
+            {
+                if (_probeFile.ID == currid)
+                    txtHash.Text = hash;
+
+                progresBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
@@ -69,6 +71,11 @@ namespace fileCrawlerWPF.Controls
         private void btnOpenFolder_Click(object sender, RoutedEventArgs e)
         {
             _probeFile?.OpenFolder();
+        }
+
+        private void FileInformation_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            progresBar.Visibility = Visibility.Collapsed;
         }
     }
 }

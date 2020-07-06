@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:fileCrawlerWPF"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="/Controls/ResourceDictionary.xaml" />
+        
+        
     </Application.Resources>
 </Application>

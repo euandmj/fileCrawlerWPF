@@ -5,25 +5,25 @@ using fileCrawlerWPF.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace fileCrawlerWPF.Controls
 {
-    /// <summary>
-    /// Interaction logic for FilterControl.xaml
-    /// </summary>
     public partial class FilterControl : UserControl
     {
         private readonly Filterer _filterer;
 
-        public event EventHandler<EventArgs> RequestFilter;
+        public event EventHandler Clear;
+        public event EventHandler RequestFilter;
         public event EventHandler<FileSelectedEventArgs> FileSelected;
 
         public FilterControl()
         {
             InitializeComponent();
+
 
             DataContext = this;
             _filterer = new Filterer();
@@ -32,6 +32,7 @@ namespace fileCrawlerWPF.Controls
 
 
         public ObservableCollection<ProbeFile> FilteredItems { get; set; }
+
 
         public ProbeFile SelectedItem
         {
@@ -49,30 +50,22 @@ namespace fileCrawlerWPF.Controls
 
         private void ResetView()
         {
-            FilteredItems          .Clear();
-            txtResolution          .Clear();
-            txtFramerate           .Clear();
-            txtVCodec              .Clear();
-            txtACodec              .Clear();
-            txtName.Document.Blocks.Clear();
-
-            chkResolution.IsChecked = false;
-            chkFrameRate.IsChecked  = false;
-            chkVCodec.IsChecked     = false;
-            chkACodec.IsChecked     = false;
-            chkName.IsChecked       = false;
-
+            FilteredItems.Clear();
+            foreach(var opt in Grid.Children.OfType<FilterOption>())
+            {
+                opt.Reset();
+            }
         }
 
         private IReadOnlyCollection<(FilterContext, object)> GetFilterContexts()
         {
             return new List<(FilterContext, object)>(5)
             {
-                (FilterContext.Framerate, int.Parse(txtFramerate.Text == string.Empty ? "0" : txtFramerate.Text)),
-                (FilterContext.Resolution, int.Parse(txtResolution.Text == string.Empty ? "0" : txtResolution.Text)),
-                (FilterContext.Name, txtName.GetText()),
-                (FilterContext.AudioCodec, txtACodec.Text),
-                (FilterContext.VideoCodec, txtVCodec.Text)
+                (Filter_Res.FilterContext, Filter_Res.GetValue<int>()),
+                (Filter_Frames.FilterContext, Filter_Frames.GetValue<int>()),
+                (Filter_VCodec.FilterContext, Filter_VCodec.GetValue<string>()),
+                (Filter_ACodec.FilterContext, Filter_ACodec.GetValue<string>())
+                // @TODO - add control for the richtextbox
             };
         }
 
@@ -92,15 +85,14 @@ namespace fileCrawlerWPF.Controls
 
         private void lvFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // this should raise an event to the parent control to update the filter select info
             if (!(SelectedItem is null))
                 FileSelected?.Invoke(this, new FileSelectedEventArgs(SelectedItem.ID));
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
-            // reset ui to default
             ResetView();
+            Clear?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
@@ -109,15 +101,10 @@ namespace fileCrawlerWPF.Controls
             RequestFilter?.Invoke(this, e);
 
         }
-        private void FilterCheckChanged(object sender, RoutedEventArgs e)
-        {
-            var cb = sender as FilterContextCheckBox;
-            _filterer.ToggleFilter(cb.FilterContext, cb.IsChecked.Value);
-        }
 
-        private void Numerical_PreviewText(object sender, TextCompositionEventArgs e)
+        private void FilterOption_FilterToggled(object sender, FilterToggledEventArgs e)
         {
-            e.Handled = !int.TryParse(e.Text, out _);
+            _filterer.ToggleFilter(e.Context, e.IsEnabled);
         }
     }
 }
