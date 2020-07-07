@@ -22,14 +22,14 @@ namespace fileCrawlerWPF.Controls
             InitializeComponent();
         }
 
-        private FileDirectory? SelectedItem
+        private TreeViewItem SelectedItem
         {
             get
             {
                 try
                 {
-                    if (dgFiles.SelectedIndex == -1) return null;
-                    return (FileDirectory)dgFiles.SelectedItem;
+                    if (tvFiles.SelectedItem == null) return null;
+                    return (TreeViewItem)tvFiles.SelectedItem;
                 }
                 catch (InvalidCastException)
                 {
@@ -38,13 +38,26 @@ namespace fileCrawlerWPF.Controls
             }
         }
 
+        public void ReplaceTree(TreeViewItem newItem)
+        {
+            this.tvFiles.Items.Clear();
+            this.tvFiles.Items.Add(newItem);
+        }
+
         private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dgFiles.SelectedIndex == -1 ||
-                !SelectedItem.HasValue)
-                return;
+            //if (SelectedItem is null)
+            //    return;
 
-            FileSelected?.Invoke(this, new FileSelectedEventArgs(SelectedItem.Value));
+            //FileSelected?.Invoke(this, new FileSelectedEventArgs((Guid)SelectedItem.Tag));
+        }
+        private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (SelectedItem is null) return;
+
+            var x = (Guid)SelectedItem.Tag;
+
+            FileSelected?.Invoke(this, new FileSelectedEventArgs(x));
         }
 
         private void btnSelectFolder_Click(object sender, System.Windows.RoutedEventArgs e)

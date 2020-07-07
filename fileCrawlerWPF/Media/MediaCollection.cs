@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -17,9 +19,9 @@ namespace fileCrawlerWPF.Media
             Directories = new ObservableCollection<FileDirectory>();
         }
 
-        public ObservableCollection<FileDirectory> Directories { get; private set; }
 
         public int TotalFilesCount { get { return Directories.Count(); } }
+        public ObservableCollection<FileDirectory> Directories { get; private set; }        
         public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }
 
         private void RemoveNonVideoFiles()
@@ -69,16 +71,14 @@ namespace fileCrawlerWPF.Media
                 {
                     if (File.Exists(path))
                     {
-                        if (!Directories.Any(x => x.Path == path))
-                            Directories.Add(new FileDirectory(path, Path.GetFileName(path)));
+                        Directories.Add(new FileDirectory(path));
                     }
                     else if (Directory.Exists(path))
                     {
                         var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
                         files.ToList().ForEach(x =>
                         {
-                            if (!Directories.Any(y => y.Path == x))
-                                Directories.Add(new FileDirectory(x, Path.GetFileName(x)));
+                            Directories.Add(new FileDirectory(x));
                         });
                     }
                 }
@@ -86,7 +86,7 @@ namespace fileCrawlerWPF.Media
             catch (Exception)
             {
                 var logged = Directories.FirstOrDefault(x => x.Path == path);
-                if (!(logged.Name is null))
+                if (!(logged.DirectoryInfo.Name is null))
                     Directories.Remove(logged);
                 throw;
             }

@@ -1,9 +1,14 @@
 ﻿using fileCrawlerWPF.Controls;
+using fileCrawlerWPF.Converters;
 using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Media;
+using fileCrawlerWPF.Util;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace fileCrawlerWPF
 {
@@ -29,7 +34,6 @@ namespace fileCrawlerWPF
             ctlFilter.Clear                 += this.CtlFilter_Clear;
         }
 
-        
 
         public ProbeFile SelectedFilterFile { get; set; }
 
@@ -61,6 +65,8 @@ namespace fileCrawlerWPF
             try
             {
                 media.ProcessDirectory(e.Path);
+                ctlFileImport.ReplaceTree(
+                    DirectoryProcessor.BuildFileTree(media.Directories));
             }
             catch(Exception ex)
             {
@@ -79,7 +85,10 @@ namespace fileCrawlerWPF
         private void CtlFilter_RequestFilter(object sender, EventArgs e)
         {
             media.CacheAll();
-            ctlFilter.OnFilter(media.CachedFiles, e);
+            //ctlFilter.OnFilter(media.CachedFiles, e);
+
+
+            DirectoryProcessor.BuildFileTree(media.Directories);
         }
 
         private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)
@@ -93,7 +102,7 @@ namespace fileCrawlerWPF
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ctlFileImport.dgFiles.DataContext = media.Directories;
+            ctlFileImport.tvFiles.DataContext = media.Directories;
         }
         #endregion
 

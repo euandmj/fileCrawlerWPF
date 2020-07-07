@@ -1,18 +1,17 @@
 ﻿using System;
+using System.IO;
 
 namespace fileCrawlerWPF.Media
 {
     public struct FileDirectory
     {
         public Guid ID { get; set; }
-        public string Path { get; set; }
-        public string Name { get; set; }
-
-        public FileDirectory(string p, string n)
+        public DirectoryInfo DirectoryInfo { get; set; }
+        public string Path => DirectoryInfo.FullName;
+        public FileDirectory(string p)
         {
             ID = Guid.NewGuid();
-            Path = p;
-            Name = n;
+            DirectoryInfo = new DirectoryInfo(p);
         }
     }
 }

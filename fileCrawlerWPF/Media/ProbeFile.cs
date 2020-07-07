@@ -22,7 +22,7 @@ namespace fileCrawlerWPF.Media
         protected long _size;
         protected byte[] _hash;
         protected BitmapSource _thumbnail;
-        protected readonly DirectoryInfo _directory;
+        public readonly DirectoryInfo _directory;
 
         public string VideoCodec => videoCodec.codec;
         public string AudioCodec => audioCodec.codec;
