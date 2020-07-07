@@ -125,12 +125,16 @@
     <Compile Include="Controls\FilterOption.xaml.cs">
       <DependentUpon>FilterOption.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FilterOptionRichTextBox.xaml.cs">
+      <DependentUpon>FilterOptionRichTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\model\FileInfoModel.cs" />
     <Compile Include="Converters\FileNullConverter.cs" />
     <Compile Include="Events\DirectorySelectedEventArgs.cs" />
     <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Events\FilterToggledEventArgs.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
+    <Compile Include="Filters\IFilterOption.cs" />
     <Compile Include="Util\FileAliases.cs" />
     <Compile Include="Filters\FilterContext.cs" />
     <Compile Include="Filters\Filterer.cs" />
@@ -151,6 +155,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\FilterOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FilterOptionRichTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

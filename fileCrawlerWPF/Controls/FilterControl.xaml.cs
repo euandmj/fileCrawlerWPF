@@ -51,7 +51,7 @@ namespace fileCrawlerWPF.Controls
         private void ResetView()
         {
             FilteredItems.Clear();
-            foreach(var opt in Grid.Children.OfType<FilterOption>())
+            foreach(var opt in Grid.Children.OfType<IFilterOption>())
             {
                 opt.Reset();
             }
@@ -64,8 +64,8 @@ namespace fileCrawlerWPF.Controls
                 (Filter_Res.FilterContext, Filter_Res.GetValue<int>()),
                 (Filter_Frames.FilterContext, Filter_Frames.GetValue<int>()),
                 (Filter_VCodec.FilterContext, Filter_VCodec.GetValue<string>()),
-                (Filter_ACodec.FilterContext, Filter_ACodec.GetValue<string>())
-                // @TODO - add control for the richtextbox
+                (Filter_ACodec.FilterContext, Filter_ACodec.GetValue<string>()),
+                (Filter_Name.FilterContext, Filter_Name.GetValue<string>())
             };
         }
 

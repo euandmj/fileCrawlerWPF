@@ -1,6 +1,7 @@
 ﻿using fileCrawlerWPF.Media;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace fileCrawlerWPF.Filters
 {
@@ -24,11 +25,14 @@ namespace fileCrawlerWPF.Filters
             else
                 return false;
         }
+
         private static bool IsNameMatch(string src, string target)
         {
-            foreach (string s in src.Split(' '))
+            for(int i = 0; i < src.Length; ++i)
             {
-                if (string.Compare(s, target, ignoreCase: true) == 0)
+                var substr = src.Substring(0, i);
+
+                if (target.ToLower().Contains(substr.ToLower()))
                     return true;
             }
             return false;
@@ -61,6 +65,12 @@ namespace fileCrawlerWPF.Filters
         public static Func<ProbeFile, object, bool> NameFunc = (file, x) =>
         {
             return IsNameMatch((string)x, file.Name);
+        };
+
+        public static Func<ProbeFile, object, bool> RegexFunc = (file, x) =>
+        {
+            var str = x as string;
+            return Regex.IsMatch(file.Name, str);
         };
     }
 }

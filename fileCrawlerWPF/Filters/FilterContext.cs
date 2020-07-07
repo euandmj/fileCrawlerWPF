@@ -12,6 +12,7 @@ namespace fileCrawlerWPF.Filters
         Framerate,
         VideoCodec,
         AudioCodec,
-        Name
+        Name,
+        Regex
     }
 }
