@@ -22,22 +22,6 @@ namespace fileCrawlerWPF.Media
         public int TotalFilesCount { get { return Directories.Count(); } }
         public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }
 
-        private void RemoveNonVideoFiles()
-        {
-            // work out which keys belong to non video files
-            var keys_to_remove = _cache
-                .Where(entry => entry.Value.videoCodec.codecType != "video")
-                .Select(entry => entry.Key);
-
-            // remove the non-video entries from the dictionary. 
-            foreach (var k in keys_to_remove)
-            {
-                _cache.Remove(k);
-                int index = Directories.ToList().FindIndex(x => x.ID == k);
-                Directories.RemoveAt(index);
-            }            
-        }
-
         private ProbeFile Cache(Guid id, string path)
         {
             if (_cache.ContainsKey(id))
@@ -61,7 +45,7 @@ namespace fileCrawlerWPF.Media
         public void ProcessDirectory(string path)
         {
             if (Directories.Any(x => x.Path == path))
-                return;
+                throw new DirectoryAlreadyExistsException(path);
 
             try
             {
@@ -85,6 +69,7 @@ namespace fileCrawlerWPF.Media
             }
             catch (Exception)
             {
+                // attempt to remove this directory from the list. 
                 var logged = Directories.FirstOrDefault(x => x.Path == path);
                 if (!(logged.Name is null))
                     Directories.Remove(logged);
@@ -98,6 +83,16 @@ namespace fileCrawlerWPF.Media
             {
                 Cache(item.ID, item.Path);
             }
+        }
+
+        public void RemoveFile(Guid id)
+        {
+            if (!Directories.Any(x => x.ID == id)) throw new ArgumentException("id is not recognised");
+
+            var dir = Directories.First(x => x.ID == id);
+
+            Directories.Remove(dir);
+            _cache.Remove(id);
         }
 
         public void Reset()

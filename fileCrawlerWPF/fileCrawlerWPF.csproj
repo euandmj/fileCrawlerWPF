@@ -135,6 +135,7 @@
     <Compile Include="Events\FilterToggledEventArgs.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
     <Compile Include="Filters\IFilterOption.cs" />
+    <Compile Include="Media\DirectoryAlreadyExistsException.cs" />
     <Compile Include="Util\FileAliases.cs" />
     <Compile Include="Filters\FilterContext.cs" />
     <Compile Include="Filters\Filterer.cs" />
@@ -242,6 +243,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\filter.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\save.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\delete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

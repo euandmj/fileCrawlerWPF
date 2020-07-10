@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace fileCrawlerWPF.Filters
+﻿namespace fileCrawlerWPF.Filters
 {
     public enum FilterContext
     {
@@ -13,6 +7,7 @@ namespace fileCrawlerWPF.Filters
         VideoCodec,
         AudioCodec,
         Name,
-        Regex
+        Regex,
+        Extension
     }
 }

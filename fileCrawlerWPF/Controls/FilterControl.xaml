@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:fileCrawlerWPF.Controls"
              mc:Ignorable="d"
              d:DesignHeight="400"
-             d:DesignWidth="500">
+             d:DesignWidth="700">
     <DockPanel Background="White"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
@@ -68,6 +68,14 @@
                                 Grid.Column="0">
             </local:FilterOption>
 
+            <local:FilterOption x:Name="Filter_Extension"
+                                FilterName="Extension"
+                                FilterContext="Extension"
+                                FilterToggled="FilterOption_FilterToggled"
+                                Grid.Row="0"
+                                Grid.Column="2">
+            </local:FilterOption>
+
             <local:FilterOption x:Name="Filter_ACodec"
                                 FilterName="Audio Codec"
                                 FilterContext="AudioCodec"
@@ -76,20 +84,28 @@
                                 Grid.Column="0">
             </local:FilterOption>
 
+            <local:FilterOptionRichTextBox x:Name="Filter_Regex"
+                                FilterName="Regex"
+                                FilterContext="Regex"
+                                FilterToggled="FilterOption_FilterToggled"
+                                Grid.Row="2"
+                                Grid.Column="1">
+
+            </local:FilterOptionRichTextBox>
+
 
             <local:FilterOptionRichTextBox x:Name="Filter_Name"
-                                           FilterName="Regex"
+                                           FilterName="Name"
                                            FilterContext="Regex"
                                            Grid.Row="1"
                                            Grid.Column="1"
-                                           Grid.RowSpan="2"
                                            FilterToggled="FilterOption_FilterToggled">
             </local:FilterOptionRichTextBox>
 
             <StackPanel Orientation="Horizontal"
                         Grid.Row="0"
                         Grid.RowSpan="1"
-                        Grid.Column="2">
+                        Grid.Column="3">
                 <Button x:Name="btnClear"
                         Background="Transparent"
                         VerticalAlignment="Center"
@@ -101,12 +117,14 @@
                            Width="35"
                            Height="35" />
                 </Button>
-            </StackPanel>
-
+            </StackPanel>           
+            
+            
             <StackPanel Orientation="Horizontal"
                         Grid.Row="1"
                         Grid.RowSpan="2"
-                        Grid.Column="2">
+                        Grid.Column="3">
+                
                 <Button x:Name="btnFilter"
                         Background="Transparent"
                         VerticalAlignment="Center"
@@ -126,7 +144,7 @@
                      Height="auto"
                      Grid.Row="3"
                      Grid.Column="0"
-                     Grid.ColumnSpan="4"
+                     Grid.ColumnSpan="5"
                      BorderBrush="Black"
                      ItemsSource="{Binding Path=FilteredItems}"
                      DisplayMemberPath="Name"

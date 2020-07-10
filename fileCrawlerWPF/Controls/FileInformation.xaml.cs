@@ -12,70 +12,68 @@ namespace fileCrawlerWPF.Controls
     /// </summary>
     public partial class FileInformation : UserControl
     {
-        private FileInfoModel _viewModel;
-        private ProbeFile _probeFile = null;
+        private readonly FileInfoModel _viewModel;
 
         public FileInformation()
         {
-            _viewModel = new FileInfoModel(ProbeFile);
-            DataContext = _viewModel;
-
             InitializeComponent();
-
+            _viewModel = new FileInfoModel();
             DataContextChanged += this.FileInformation_DataContextChanged;
         }       
            
 
-        public string Title { get; set; }
-
-        public ProbeFile ProbeFile
+        public void SetFile(ProbeFile f)
         {
-            get => _probeFile;
-            set
-            {
-                _probeFile = value;
-                _viewModel = new FileInfoModel(value);
-                DataContext = _viewModel;
-            }
+            _viewModel.ProbeFile = f;
         }
 
         private async void imgHashCalculate_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (_probeFile is null) return;
-            var currid = _probeFile.ID;
-            string hash = null;
+            byte[] hash = null;
+            var file = _viewModel.ProbeFile;
 
             try
             {
                 progresBar.Visibility = Visibility.Visible;
-                hash = await _probeFile.ComputeHashAsync();
+                imgHashCalculate.IsEnabled = false;
+
+                hash = await file.ComputeHashAsync();
             }
-            catch(Exception)
+            catch (Exception)
             {
-                MessageBox.Show($"Unable to calculate hash for file {_probeFile.Name}");
+                MessageBox.Show($"Unable to calculate hash for file {_viewModel.FileName}");
             }
             finally
             {
-                if (_probeFile.ID == currid)
-                    txtHash.Text = hash;
+                //file.Hash ??= hash;
+                if (_viewModel.ID == file.ID)
+                    _viewModel.SetHash(hash);
+                else
+                    file.Hash = hash;
 
                 progresBar.Visibility = Visibility.Collapsed;
+                imgHashCalculate.IsEnabled = true;
             }
         }
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            _probeFile?.OpenFile();
+            _viewModel.ProbeFile.OpenFile();
         }
 
         private void btnOpenFolder_Click(object sender, RoutedEventArgs e)
         {
-            _probeFile?.OpenFolder();
+            _viewModel.ProbeFile.OpenFolder();
         }
 
         private void FileInformation_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             progresBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = _viewModel;
         }
     }
 }

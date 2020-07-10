@@ -1,5 +1,4 @@
 ﻿using fileCrawlerWPF.Events;
-using fileCrawlerWPF.Extensions;
 using fileCrawlerWPF.Filters;
 using fileCrawlerWPF.Media;
 using System;
@@ -8,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace fileCrawlerWPF.Controls
 {
@@ -65,7 +63,8 @@ namespace fileCrawlerWPF.Controls
                 (Filter_Frames.FilterContext, Filter_Frames.GetValue<int>()),
                 (Filter_VCodec.FilterContext, Filter_VCodec.GetValue<string>()),
                 (Filter_ACodec.FilterContext, Filter_ACodec.GetValue<string>()),
-                (Filter_Name.FilterContext, Filter_Name.GetValue<string>())
+                (Filter_Name.FilterContext, Filter_Name.GetValue()),
+                (Filter_Extension.FilterContext, Filter_Extension.GetValue<string>())
             };
         }
 
@@ -101,6 +100,11 @@ namespace fileCrawlerWPF.Controls
             RequestFilter?.Invoke(this, e);
 
         }
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            // export results
+
+        }        
 
         private void FilterOption_FilterToggled(object sender, FilterToggledEventArgs e)
         {

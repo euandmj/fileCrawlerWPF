@@ -1,10 +1,14 @@
 ﻿using Microsoft.WindowsAPICodePack.Shell;
 using NReco.VideoInfo;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
@@ -13,14 +17,19 @@ namespace fileCrawlerWPF.Media
 {
     public struct CodecInfo
     {
+        public enum CodecType
+        {
+            Video,
+            Audio
+        }
+
         public string codec;
-        public string codecType;
+        public CodecType codecType;
     }
 
     public class ProbeFile : IEquatable<ProbeFile>
     {
         protected long _size;
-        protected byte[] _hash;
         protected BitmapSource _thumbnail;
         protected readonly DirectoryInfo _directory;
 
@@ -37,17 +46,18 @@ namespace fileCrawlerWPF.Media
         public string Path          => _directory.FullName;
         public string FileSize      => _size / 1000000 + " MB";
         public string Resolution    => $"{Width}x{Height}";
+
         public string HashAsHex
-            => _hash != null
-            ? $"#{BitConverter.ToString(_hash).Replace("-", "").ToLowerInvariant()}"
+            => Hash != null
+            ? $"#{BitConverter.ToString(Hash).Replace("-", "").ToLowerInvariant()}"
             : null;
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public float FrameRate { get; private set; }
-        public TimeSpan Duration { get; private set; }        
-
-        public ProbeFile() { }
+        public byte[] Hash { get; set; }
+        public int Width { get; protected set; }
+        public int Height { get; protected set; }
+        public float FrameRate { get; protected set; }
+        public TimeSpan Duration { get; protected set; }
+        public IList<string> FileTypes { get; protected set; }
 
         public ProbeFile(string path, Guid id)
         {            
@@ -69,13 +79,14 @@ namespace fileCrawlerWPF.Media
                 _size = new FileInfo(Path).Length;
 
                 Duration = info.Duration;
+                FileTypes = info.FormatName.Split(',');
 
                 foreach (var stream in info.Streams)
                 {
                     if (stream.CodecType == "video")
                     {
                         videoCodec.codec = stream.CodecName;
-                        videoCodec.codecType = stream.CodecType;
+                        videoCodec.codecType = CodecInfo.CodecType.Video;
                         Width = stream.Width;
                         Height = stream.Height;
                         FrameRate = stream.FrameRate;
@@ -83,17 +94,13 @@ namespace fileCrawlerWPF.Media
                     else if (stream.CodecType == "audio")
                     {
                         audioCodec.codec = stream.CodecName;
-                        audioCodec.codecType = stream.CodecType;
+                        audioCodec.codecType = CodecInfo.CodecType.Audio;
                     }
                 }
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Unable to locate the specific file. path is supplied as " + Path);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
+                throw new FileNotFoundException("Unable to locate the specific file. path is supplied as " + Path);
             }
         }
 
@@ -113,17 +120,14 @@ namespace fileCrawlerWPF.Media
             _thumbnail = BitmapToBitmapImage(bmp);
         }
 
-        public async Task<string> ComputeHashAsync()
+        public async Task<byte[]> ComputeHashAsync()
         {
-            if (!(_hash is null)) return HashAsHex;
-
             using (var md5 = MD5.Create())
             using (var stream = File.OpenRead(Path))
             {
                 return await Task.Run(() =>
                 {
-                   _hash = md5.ComputeHash(stream);
-                   return HashAsHex;
+                    return md5.ComputeHash(stream);
                 });
             }
         }

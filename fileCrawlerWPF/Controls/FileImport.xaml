@@ -104,6 +104,16 @@
             </DataGrid.Resources>
 
             <DataGrid.Columns>
+                <DataGridTemplateColumn Width="SizeToCells"
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Width="20" Height="20"
+                                   MouseDown="Image_MouseDown"
+                                   Source="/fileCrawlerWPF;component/Content/delete.png" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <DataGridTextColumn Header="Name"
                                     Binding="{Binding Name, Mode=OneWay}"

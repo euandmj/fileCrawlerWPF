@@ -7,7 +7,8 @@
              xmlns:cvtr="clr-namespace:fileCrawlerWPF.Converters"
              mc:Ignorable="d"
              d:DesignHeight="370"
-             Width="440">
+             Width="440"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <cvtr:FileNullConverter x:Key="nullConverter" />
@@ -15,7 +16,7 @@
     </UserControl.Resources>
 
     <Grid Background="White"
-          IsEnabled="{Binding Converter={StaticResource nullConverter}}">
+          IsEnabled="{Binding Enabled}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -23,8 +24,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <GroupBox x:Name="groupBox"
-                  Header="{Binding XPath=Title}"
+        <GroupBox Name="groupBox"
                   Height="Auto"
                   Margin="5 5 5 5"
                   Width="Auto">
@@ -134,8 +134,9 @@
                                     AutomationProperties.HelpText="Open this file"
                                     BorderThickness="0"
                                     Background="{x:Null}"
-                                    Click="btnOpenFile_Click"
-                                    Foreground="{x:Null}">
+                                    Command="{Binding OpenFile}"
+                                    Foreground="{x:Null}"
+                                    Click="btnOpenFile_Click">
                                 <Image Source="/Content/file.png"
                                        Width="35" />
                             </Button>
@@ -159,10 +160,11 @@
 
 
                 </StackPanel>
-                <Image Height="140"
-                       x:Name="imgThumbnail"
+                <Image x:Name="imgThumbnail"
+                       Height="154"
+                       Margin="5"
                        Source="{Binding Image}"
-                       Margin="139,0,199,0" />
+                       Stretch="UniformToFill" />
 
             </StackPanel>
         </GroupBox>

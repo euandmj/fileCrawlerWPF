@@ -13,7 +13,8 @@ namespace fileCrawlerWPF.Controls
         private readonly string lastCheckedDirectory = null;
 
         public event EventHandler Clear;
-        public event EventHandler<DirectorySelectedEventArgs> DirectoryScanned;
+        public event EventHandler<PathSelectedEventArgs> PathSelected;
+        public event EventHandler<FileSelectedEventArgs> RemoveFile;
         public event EventHandler<FileSelectedEventArgs> FileSelected;
 
 
@@ -23,25 +24,11 @@ namespace fileCrawlerWPF.Controls
         }
 
         private FileDirectory? SelectedItem
-        {
-            get
-            {
-                try
-                {
-                    if (dgFiles.SelectedIndex == -1) return null;
-                    return (FileDirectory)dgFiles.SelectedItem;
-                }
-                catch (InvalidCastException)
-                {
-                    return null;
-                }
-            }
-        }
+            => dgFiles.SelectedItem as FileDirectory?;
 
         private void Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dgFiles.SelectedIndex == -1 ||
-                !SelectedItem.HasValue)
+            if (!SelectedItem.HasValue)
                 return;
 
             FileSelected?.Invoke(this, new FileSelectedEventArgs(SelectedItem.Value));
@@ -57,7 +44,7 @@ namespace fileCrawlerWPF.Controls
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
                 {
                     string path = dialog.SelectedPath;
-                    DirectoryScanned?.Invoke(this, new DirectorySelectedEventArgs(path));
+                    PathSelected?.Invoke(this, new PathSelectedEventArgs(path));
                 }
             }
         }
@@ -72,7 +59,7 @@ namespace fileCrawlerWPF.Controls
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.FileName))
                 {
                     string path = dialog.FileName;
-                    DirectoryScanned?.Invoke(this, new DirectorySelectedEventArgs(path));
+                    PathSelected?.Invoke(this, new PathSelectedEventArgs(path));
                 }
             }
         }
@@ -80,6 +67,12 @@ namespace fileCrawlerWPF.Controls
         private void btnClear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             Clear?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Image_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (SelectedItem is null) return;
+            RemoveFile?.Invoke(this, new FileSelectedEventArgs(SelectedItem.Value.ID));
         }
     }
 }

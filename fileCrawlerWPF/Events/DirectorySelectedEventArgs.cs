@@ -2,13 +2,13 @@
 
 namespace fileCrawlerWPF.Events
 {
-    public class DirectorySelectedEventArgs
+    public class PathSelectedEventArgs
             : EventArgs
     {
         public string Path { get; private set; }
 
 
-        public DirectorySelectedEventArgs(string path)
+        public PathSelectedEventArgs(string path)
         {
             Path = path;
         }

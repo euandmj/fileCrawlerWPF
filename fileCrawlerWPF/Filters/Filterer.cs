@@ -47,6 +47,11 @@ namespace fileCrawlerWPF.Filters
                 FilterContext.Regex,
                 (false,
                 FilterUtlity.RegexFunc));
+
+            _filterMap.Add(
+                FilterContext.Extension,
+                (false,
+                FilterUtlity.ExtFunc));
         }       
 
 

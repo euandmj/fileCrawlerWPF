@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:fileCrawlerWPF.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="450"
-             d:DesignWidth="800"
+             d:DesignHeight="100"
+             d:DesignWidth="150"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <Style TargetType="Control">
@@ -18,15 +18,17 @@
 
         <Style TargetType="TextBox">
             <Setter Property="FontSize"
-                    Value="15 " />
+                    Value="12 " />
             <Setter Property="Height"
                     Value="25" />
-            <Setter Property="Width"
+            <Setter Property="MinWidth"
                     Value="100" />
+            <Setter Property="MaxWidth"
+                    Value="200" />
             <Setter Property="HorizontalAlignment"
-                    Value="Right" />
-            <Setter Property="VerticalAlignment"
                     Value="Center" />
+            <Setter Property="VerticalAlignment"
+                    Value="Stretch" />
         </Style>
         
         <Style TargetType="Label">

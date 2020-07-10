@@ -1,3 +1,2 @@
 ﻿filter name regex
 render as treeview
-replace filter textbox + checkbox with a filter control

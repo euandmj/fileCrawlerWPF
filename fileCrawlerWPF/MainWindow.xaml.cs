@@ -22,58 +22,63 @@ namespace fileCrawlerWPF
             media = new MediaCollection();
 
             ctlFileImport.FileSelected      += this.CtlFileImport_FileSelected;
-            ctlFileImport.DirectoryScanned  += this.CtlFileImport_DirectoryScanned;
+            ctlFileImport.PathSelected      += this.CtlFileImport_DirectoryScanned;
             ctlFileImport.Clear             += this.CtlFileImport_Clear;
+            ctlFileImport.RemoveFile        += this.CtlFileImport_RemoveFile;
             ctlFilter.RequestFilter         += this.CtlFilter_RequestFilter;
             ctlFilter.FileSelected          += this.CtlFilter_FileSelected;
             ctlFilter.Clear                 += this.CtlFilter_Clear;
         }
 
-        
-
-        public ProbeFile SelectedFilterFile { get; set; }
-
+       
 
         #region Events
 
-        private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
-        {
-            var f = media.GetFileFromCache(e.Directory);
-
-            if (f is null) throw new ArgumentNullException(nameof(e));
-
-            All_FileInfo.ProbeFile = f;
-        }
-
-        private void CtlFileImport_Clear(object sender, EventArgs e)
-        {
-            media.Reset();
-            All_FileInfo.ProbeFile = null;
-        }
-
-        private void CtlFilter_Clear(object sender, EventArgs e)
-        {
-            Filter_FileInfo.ProbeFile = null;
-        }
-
-        private void CtlFileImport_DirectoryScanned(object sender, DirectorySelectedEventArgs e)
+        private void CtlFileImport_DirectoryScanned(object sender, PathSelectedEventArgs e)
         {
             try
             {
                 media.ProcessDirectory(e.Path);
             }
-            catch(Exception ex)
+            catch(DirectoryAlreadyExistsException ex)
             {
-                MessageBox.Show(ex.Message, "Error scanning folder", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"The following directory already exists\n{ex.Directory}", 
+                    "Error scanning folder", 
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, 
+                    "Error scanning folder", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void CtlFileImport_Clear(object sender, EventArgs e)
+        {
+            media.Reset();
+            All_FileInfo.SetFile(null);
+        }
+
+        private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
+        {
+            var f = media.GetFileFromCache(e.Directory);
+            if (f is null) throw new ArgumentNullException(nameof(e));
+            All_FileInfo.SetFile(f);
+        }
+        private void CtlFileImport_RemoveFile(object sender, FileSelectedEventArgs e)
+        {
+            media.RemoveFile(e.ID);
+            All_FileInfo.SetFile(null);
         }
 
         private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            if(sender is FilterControl)
-            {
-                Filter_FileInfo.ProbeFile = media.GetFileFromCache(e.ID);
-            }
+            Filter_FileInfo.SetFile(media.GetFileFromCache(e.ID));
+        }       
+
+        private void CtlFilter_Clear(object sender, EventArgs e)
+        {
+            Filter_FileInfo.SetFile(null);
         }
 
         private void CtlFilter_RequestFilter(object sender, EventArgs e)
