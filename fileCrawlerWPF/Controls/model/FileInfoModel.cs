@@ -1,7 +1,6 @@
 ﻿using fileCrawlerWPF.Media;
 using System;
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace fileCrawlerWPF.Controls.model

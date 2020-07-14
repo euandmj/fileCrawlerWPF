@@ -11,147 +11,140 @@
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
 
-        <Grid x:Name="Grid"
-              DockPanel.Dock="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
 
-            <Grid.Resources>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="BorderBrush"
-                            Value="Pink" />
-                    <Setter Property="BorderThickness"
-                            Value="5" />
-                </Style>
+            <Grid x:Name="Grid"
+                  DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <Style TargetType="StackPanel">
-                    <Setter Property="Margin"
-                            Value="5 5 5 5" />
-                    <Setter Property="HorizontalAlignment"
-                            Value="Right" />
-                </Style>
-            </Grid.Resources>
+                <Grid.Resources>
+
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Margin"
+                                Value="5 5 5 5" />
+                        <Setter Property="HorizontalAlignment"
+                                Value="Right" />
+                    </Style>
+                </Grid.Resources>
 
 
-            <local:FilterOption x:Name="Filter_Res"
-                                FilterName="Resolution"
-                                IsNumeric="True"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="0"
-                                Grid.Column="0">
-            </local:FilterOption>
+                <local:FilterOption x:Name="Filter_Res"
+                                    FilterName="Resolution"
+                                    IsNumeric="True"
+                                    FilterToggled="FilterOption_FilterToggled"
+                                    Grid.Row="0"
+                                    Grid.Column="0">
+                </local:FilterOption>
 
-            <local:FilterOption x:Name="Filter_Frames"
-                                FilterName="FrameRate"
-                                IsNumeric="True"
-                                FilterContext="Framerate"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="0"
-                                Grid.Column="1">
-            </local:FilterOption>
+                <local:FilterOption x:Name="Filter_Frames"
+                                    FilterName="FrameRate"
+                                    IsNumeric="True"
+                                    FilterContext="Framerate"
+                                    FilterToggled="FilterOption_FilterToggled"
+                                    Grid.Row="0"
+                                    Grid.Column="1">
+                </local:FilterOption>
 
-            <local:FilterOption x:Name="Filter_VCodec"
-                                FilterName="Video Codec"
-                                FilterContext="VideoCodec"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="1"
-                                Grid.Column="0">
-            </local:FilterOption>
+                <local:FilterOption x:Name="Filter_VCodec"
+                                    FilterName="Video Codec"
+                                    FilterContext="VideoCodec"
+                                    FilterToggled="FilterOption_FilterToggled"
+                                    Grid.Row="1"
+                                    Grid.Column="0">
+                </local:FilterOption>
 
-            <local:FilterOption x:Name="Filter_Extension"
-                                FilterName="Extension"
-                                FilterContext="Extension"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="0"
-                                Grid.Column="2">
-            </local:FilterOption>
+                <local:FilterOption x:Name="Filter_Extension"
+                                    FilterName="Extension"
+                                    FilterContext="Extension"
+                                    FilterToggled="FilterOption_FilterToggled"
+                                    Grid.Row="0"
+                                    Grid.Column="2">
+                </local:FilterOption>
 
-            <local:FilterOption x:Name="Filter_ACodec"
-                                FilterName="Audio Codec"
-                                FilterContext="AudioCodec"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="2"
-                                Grid.Column="0">
-            </local:FilterOption>
+                <local:FilterOption x:Name="Filter_ACodec"
+                                    FilterName="Audio Codec"
+                                    FilterContext="AudioCodec"
+                                    FilterToggled="FilterOption_FilterToggled"
+                                    Grid.Row="2"
+                                    Grid.Column="0">
+                </local:FilterOption>
 
-            <local:FilterOptionRichTextBox x:Name="Filter_Regex"
-                                FilterName="Regex"
-                                FilterContext="Regex"
-                                FilterToggled="FilterOption_FilterToggled"
-                                Grid.Row="2"
-                                Grid.Column="1">
+                <local:FilterOptionRichTextBox x:Name="Filter_Regex"
+                                               FilterName="Regex"
+                                               FilterContext="Regex"
+                                               FilterToggled="FilterOption_FilterToggled"
+                                               Grid.Row="2"
+                                               Grid.Column="1">
 
-            </local:FilterOptionRichTextBox>
-
-
-            <local:FilterOptionRichTextBox x:Name="Filter_Name"
-                                           FilterName="Name"
-                                           FilterContext="Regex"
-                                           Grid.Row="1"
-                                           Grid.Column="1"
-                                           FilterToggled="FilterOption_FilterToggled">
-            </local:FilterOptionRichTextBox>
-
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="0"
-                        Grid.RowSpan="1"
-                        Grid.Column="3">
-                <Button x:Name="btnClear"
-                        Background="Transparent"
-                        VerticalAlignment="Center"
-                        BorderThickness="0"
-                        AutomationProperties.HelpText="Reset Filter"
-                        HorizontalAlignment="Right"
-                        Click="btnClear_Click">
-                    <Image Source="/Content/reset.png"
-                           Width="35"
-                           Height="35" />
-                </Button>
-            </StackPanel>           
-            
-            
-            <StackPanel Orientation="Horizontal"
-                        Grid.Row="1"
-                        Grid.RowSpan="2"
-                        Grid.Column="3">
-                
-                <Button x:Name="btnFilter"
-                        Background="Transparent"
-                        VerticalAlignment="Center"
-                        BorderThickness="0"
-                        AutomationProperties.HelpText="Filter"
-                        HorizontalAlignment="Right"
-                        Click="btnFilter_Click">
-                    <Image Source="/Content/filter.png"
-                           Width="35"
-                           Height="35" />
-                </Button>
-            </StackPanel>
+                </local:FilterOptionRichTextBox>
 
 
-            <ListBox x:Name="lvFilter"
-                     Width="auto"
-                     Height="auto"
-                     Grid.Row="3"
-                     Grid.Column="0"
-                     Grid.ColumnSpan="5"
-                     BorderBrush="Black"
-                     ItemsSource="{Binding Path=FilteredItems}"
-                     DisplayMemberPath="Name"
-                     SelectionChanged="lvFilter_SelectionChanged"
-                     SelectedIndex="0">
+                <local:FilterOptionRichTextBox x:Name="Filter_Name"
+                                               FilterName="Name"
+                                               FilterContext="Regex"
+                                               Grid.Row="1"
+                                               Grid.Column="1"
+                                               FilterToggled="FilterOption_FilterToggled">
+                </local:FilterOptionRichTextBox>
 
-            </ListBox>
-        </Grid>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="0"
+                            Grid.RowSpan="1"
+                            Grid.Column="3">
+                    <Button x:Name="btnClear"
+                            Style="{StaticResource IcoButton}"
+                            AutomationProperties.HelpText="Reset Filter"
+                            Click="btnClear_Click">
+                        <Image Source="/Content/reset.png"
+                               Width="35"
+                               Height="35" />
+                    </Button>
+                </StackPanel>
+
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="1"
+                            Grid.RowSpan="2"
+                            Grid.Column="3">
+
+                    <Button x:Name="btnFilter"
+                            Style="{StaticResource IcoButton}"
+                            AutomationProperties.HelpText="Filter"
+                            Click="btnFilter_Click">
+                        <Image Source="/Content/filter.png"
+                               Width="35"
+                               Height="35" />
+                    </Button>
+                </StackPanel>
+
+
+                <ListBox x:Name="lvFilter"
+                         Width="auto"
+                         Height="auto"
+                         MinHeight="100"
+                         Grid.Row="3"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="5"
+                         BorderBrush="Black"
+                         ItemsSource="{Binding Path=FilteredItems}"
+                         DisplayMemberPath="Name"
+                         SelectionChanged="lvFilter_SelectionChanged"
+                         SelectedIndex="0">
+
+                </ListBox>
+            </Grid>
+        </ScrollViewer>
     </DockPanel>
 </UserControl>

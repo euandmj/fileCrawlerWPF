@@ -1,2 +1,1 @@
-﻿filter name regex
-render as treeview
+﻿render as treeview?

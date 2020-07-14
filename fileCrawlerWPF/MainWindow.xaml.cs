@@ -1,5 +1,4 @@
-﻿using fileCrawlerWPF.Controls;
-using fileCrawlerWPF.Events;
+﻿using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Media;
 using System;
 using System.Diagnostics;
@@ -13,13 +12,13 @@ namespace fileCrawlerWPF
     public partial class MainWindow : Window
     {
 
-        private readonly MediaCollection media;
+        private readonly MediaCollection _mediaCollection;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            media = new MediaCollection();
+            _mediaCollection = new MediaCollection();
 
             ctlFileImport.FileSelected      += this.CtlFileImport_FileSelected;
             ctlFileImport.PathSelected      += this.CtlFileImport_DirectoryScanned;
@@ -38,7 +37,7 @@ namespace fileCrawlerWPF
         {
             try
             {
-                media.ProcessDirectory(e.Path);
+                _mediaCollection.ProcessDirectory(e.Path);
             }
             catch(DirectoryAlreadyExistsException ex)
             {
@@ -55,25 +54,25 @@ namespace fileCrawlerWPF
         }
         private void CtlFileImport_Clear(object sender, EventArgs e)
         {
-            media.Reset();
+            _mediaCollection.Reset();
             All_FileInfo.SetFile(null);
         }
 
         private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            var f = media.GetFileFromCache(e.Directory);
+            var f = _mediaCollection.GetFileFromCache(e.Directory);
             if (f is null) throw new ArgumentNullException(nameof(e));
             All_FileInfo.SetFile(f);
         }
         private void CtlFileImport_RemoveFile(object sender, FileSelectedEventArgs e)
         {
-            media.RemoveFile(e.ID);
+            _mediaCollection.RemoveFile(e.ID);
             All_FileInfo.SetFile(null);
         }
 
         private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            Filter_FileInfo.SetFile(media.GetFileFromCache(e.ID));
+            Filter_FileInfo.SetFile(_mediaCollection.GetFileFromCache(e.ID));
         }       
 
         private void CtlFilter_Clear(object sender, EventArgs e)
@@ -83,8 +82,8 @@ namespace fileCrawlerWPF
 
         private void CtlFilter_RequestFilter(object sender, EventArgs e)
         {
-            media.CacheAll();
-            ctlFilter.OnFilter(media.CachedFiles, e);
+            _mediaCollection.CacheAll();
+            ctlFilter.OnFilter(_mediaCollection.CachedFiles, e);
         }
 
         private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)
@@ -98,7 +97,7 @@ namespace fileCrawlerWPF
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ctlFileImport.dgFiles.DataContext = media.Directories;
+            ctlFileImport.dgFiles.DataContext = _mediaCollection.Directories;
         }
         #endregion
 

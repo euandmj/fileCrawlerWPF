@@ -115,7 +115,6 @@
     <Compile Include="Controls\FileImport.xaml.cs">
       <DependentUpon>FileImport.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FilterContextCheckBox.cs" />
     <Compile Include="Controls\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
     </Compile>
@@ -134,6 +133,7 @@
     <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Events\FilterToggledEventArgs.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
+    <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IFilterOption.cs" />
     <Compile Include="Media\DirectoryAlreadyExistsException.cs" />
     <Compile Include="Util\FileAliases.cs" />

@@ -18,8 +18,6 @@ namespace fileCrawlerWPF.Media
         }
 
         public ObservableCollection<FileDirectory> Directories { get; private set; }
-
-        public int TotalFilesCount { get { return Directories.Count(); } }
         public IReadOnlyCollection<ProbeFile> CachedFiles { get => _cache.Values; }
 
         private ProbeFile Cache(Guid id, string path)

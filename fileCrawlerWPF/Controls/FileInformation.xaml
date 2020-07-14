@@ -30,21 +30,13 @@
                   Width="Auto">
             <StackPanel Orientation="Vertical">
                 <StackPanel.Resources>
-                    <Style TargetType="Label">
-                        <Setter Property="FontSize"
-                                Value="13" />
-                        <Setter Property="FontFamily"
-                                Value="{StaticResource FontFamily}" />
-                        <Setter Property="HorizontalAlignment"
-                                Value="Left" />
-                        <Setter Property="VerticalAlignment"
-                                Value="Top" />
-                    </Style>
-                    <Style TargetType="TextBox">
+                    <Style TargetType="Label"
+                           BasedOn="{StaticResource LabelStyle}" />
+
+                    <Style TargetType="TextBox"
+                           BasedOn="{StaticResource TextBoxStyle}">
                         <Setter Property="IsReadOnly"
                                 Value="True" />
-                        <Setter Property="FontFamily"
-                                Value="{StaticResource FontFamily}" />
                         <Setter Property="HorizontalAlignment"
                                 Value="Left" />
                         <Setter Property="VerticalAlignment"
