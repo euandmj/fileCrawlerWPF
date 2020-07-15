@@ -24,8 +24,11 @@ namespace fileCrawlerWPF.Controls
 
 
             DataContext = this;
+            comboFilterLevel.ItemsSource = Enum.GetValues(typeof(FilterLevel));
             _filterer = new Filterer();
             FilteredItems = new ObservableCollection<ProbeFile>();
+
+            comboFilterLevel.DataContext = _filterer;
         } 
 
 
@@ -46,13 +49,14 @@ namespace fileCrawlerWPF.Controls
             }
         }
 
-        private void ResetView()
+        public void ResetView()
         {
             FilteredItems.Clear();
             foreach(var opt in Grid.Children.OfType<IFilterOption>())
             {
                 opt.Reset();
             }
+            Clear?.Invoke(this, EventArgs.Empty);
         }
 
         private IReadOnlyCollection<(FilterContext, object)> GetFilterContexts()
@@ -91,7 +95,6 @@ namespace fileCrawlerWPF.Controls
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             ResetView();
-            Clear?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)

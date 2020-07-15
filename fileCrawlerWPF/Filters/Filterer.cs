@@ -1,57 +1,53 @@
 ﻿using fileCrawlerWPF.Media;
-using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace fileCrawlerWPF.Filters
 {
     sealed class Filterer
     {
-        // @todo refactor Value into a struct. Then maybe into its own Wrapper?
-        private readonly Dictionary<FilterContext, (bool, Func<ProbeFile, object, bool>)> _filterMap;
+        // @todo maybe refactor into its own Wrapper?
+        // experiment with [] operators
+        private readonly Dictionary<FilterContext, IFilter> _filterMap;
 
         public Filterer()
         {
-            _filterMap = new Dictionary<FilterContext, (bool, Func<ProbeFile, object, bool>)>();
+            _filterMap = new Dictionary<FilterContext, IFilter>();
 
             InitFilterMap();
         }
+
+        public FilterLevel Level { get; set; } = FilterLevel.All;
 
         private void InitFilterMap()
         {
             _filterMap.Add(
                 FilterContext.Resolution,
-                (false,
-                FilterUtlity.ResFunc));
+                new Filter(FilterUtlity.ResFunc));
 
             _filterMap.Add(
                 FilterContext.Framerate,
-                (false,
-                FilterUtlity.FramerateFunc));
+                new Filter(FilterUtlity.FramerateFunc));
 
             _filterMap.Add(
                 FilterContext.VideoCodec,
-                (false,
-                FilterUtlity.VCodecFunc)); 
+                new Filter(FilterUtlity.VCodecFunc)); 
             
             _filterMap.Add(
                  FilterContext.AudioCodec,
-                 (false,
-                 FilterUtlity.ACodecFunc));
+                 new Filter(FilterUtlity.ACodecFunc));
 
             _filterMap.Add(
                 FilterContext.Name,
-                (false,
-                FilterUtlity.NameFunc));
+                new Filter(FilterUtlity.NameFunc));
 
             _filterMap.Add(
                 FilterContext.Regex,
-                (false,
-                FilterUtlity.RegexFunc));
+                new Filter(FilterUtlity.RegexFunc));
 
             _filterMap.Add(
                 FilterContext.Extension,
-                (false,
-                FilterUtlity.ExtFunc));
+                new Filter(FilterUtlity.ExtFunc));
         }       
 
 
@@ -59,18 +55,21 @@ namespace fileCrawlerWPF.Filters
             IReadOnlyCollection<(FilterContext, object)> filterContexts,
             ProbeFile file)
         {
-            bool isMatch = false;
+            bool isMatch = Level == FilterLevel.All;
 
             foreach ((FilterContext context, object value) in filterContexts)
             {
 
-                if (_filterMap.TryGetValue(context, out (bool enabled, Func<ProbeFile, object, bool> func) mapValue))
+                if (_filterMap.TryGetValue(context, out IFilter mapValue) &&
+                    mapValue.Enabled)
                 {
-                    if(mapValue.enabled)
-                    {
-                        // @TODO loose (any) and hard (all) matching
-                        isMatch |= mapValue.func(file, value);
-                    }
+                    var match = mapValue.Func(file, value);
+
+                    isMatch =
+                        Level == FilterLevel.All
+                        ? isMatch &= match
+                        : isMatch |= match;
+
                 }
             }
 
@@ -90,9 +89,9 @@ namespace fileCrawlerWPF.Filters
 
         public void ToggleFilter(FilterContext ctx, bool isenabled)
         {
-            if (_filterMap.TryGetValue(ctx, out (bool, Func<ProbeFile, object, bool> func) value))
+            if (_filterMap.TryGetValue(ctx, out IFilter value))
             {
-                _filterMap[ctx] = (isenabled, value.func);
+                value.Enabled = isenabled;
             }
         }
     }

@@ -82,8 +82,21 @@ namespace fileCrawlerWPF
 
         private void CtlFilter_RequestFilter(object sender, EventArgs e)
         {
-            _mediaCollection.CacheAll();
-            ctlFilter.OnFilter(_mediaCollection.CachedFiles, e);
+            try
+            {
+                _mediaCollection.CacheAll();
+                ctlFilter.OnFilter(_mediaCollection.CachedFiles, e);
+            }
+            catch(OverflowException)
+            {
+                ctlFilter.ResetView();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Error scanning folder",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)

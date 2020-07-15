@@ -63,5 +63,11 @@
                 Value="Center" />
     </Style>
 
+    <Style x:Key="ComboBoxStyle"
+           TargetType="ComboBox">
+        <Setter Property="Background"
+                Value="Transparent" />
+    </Style>
+
 
 </ResourceDictionary>

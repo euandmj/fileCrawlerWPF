@@ -3,10 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cvtr="clr-namespace:fileCrawlerWPF.Converters"
              xmlns:local="clr-namespace:fileCrawlerWPF.Controls"
              mc:Ignorable="d"
              d:DesignHeight="400"
              d:DesignWidth="700">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <cvtr:FilterLevelConverter x:Key="levelConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <DockPanel Background="White"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
@@ -98,6 +104,25 @@
                                                Grid.Column="1"
                                                FilterToggled="FilterOption_FilterToggled">
                 </local:FilterOptionRichTextBox>
+
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Stretch"
+                            Grid.Row="1"
+                            Grid.Column="2">
+
+                    <Label Content="Filter Level"
+                           Style="{StaticResource LabelStyle}" />
+                    <ComboBox Name="comboFilterLevel"
+                              Width="auto"
+                              SelectedIndex="0"
+                              IsReadOnly="True"
+                              SelectedItem="{Binding Level, Mode=TwoWay, Converter={StaticResource levelConverter}}"
+                              Style="{StaticResource ComboBoxStyle}">
+                    </ComboBox>
+                </StackPanel>
+                
+                
 
                 <StackPanel Orientation="Horizontal"
                             Grid.Row="0"

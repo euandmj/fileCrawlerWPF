@@ -129,12 +129,15 @@
     </Compile>
     <Compile Include="Controls\model\FileInfoModel.cs" />
     <Compile Include="Converters\FileNullConverter.cs" />
+    <Compile Include="Converters\FilterLevelConverter.cs" />
     <Compile Include="Events\DirectorySelectedEventArgs.cs" />
     <Compile Include="Events\FileSelectedEventArgs.cs" />
     <Compile Include="Events\FilterToggledEventArgs.cs" />
     <Compile Include="Extensions\RichTextBoxExtensions.cs" />
+    <Compile Include="Filters\FilterLevel.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IFilterOption.cs" />
+    <Compile Include="Filters\Filter.cs" />
     <Compile Include="Media\DirectoryAlreadyExistsException.cs" />
     <Compile Include="Util\FileAliases.cs" />
     <Compile Include="Filters\FilterContext.cs" />
