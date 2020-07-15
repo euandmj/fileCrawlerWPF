@@ -15,7 +15,6 @@ namespace fileCrawlerWPF.Controls
         private readonly Filterer _filterer;
 
         public event EventHandler Clear;
-        public event EventHandler RequestFilter;
         public event EventHandler<FileSelectedEventArgs> FileSelected;
 
         public FilterControl()
@@ -23,12 +22,8 @@ namespace fileCrawlerWPF.Controls
             InitializeComponent();
 
 
-            DataContext = this;
-            comboFilterLevel.ItemsSource = Enum.GetValues(typeof(FilterLevel));
             _filterer = new Filterer();
             FilteredItems = new ObservableCollection<ProbeFile>();
-
-            comboFilterLevel.DataContext = _filterer;
         } 
 
 
@@ -49,7 +44,7 @@ namespace fileCrawlerWPF.Controls
             }
         }
 
-        public void ResetView()
+        private void ResetView()
         {
             FilteredItems.Clear();
             foreach(var opt in Grid.Children.OfType<IFilterOption>())
@@ -63,6 +58,7 @@ namespace fileCrawlerWPF.Controls
         {
             return new List<(FilterContext, object)>(5)
             {
+                // @todo i dont like this
                 (Filter_Res.FilterContext, Filter_Res.GetValue<int>()),
                 (Filter_Frames.FilterContext, Filter_Frames.GetValue<int>()),
                 (Filter_VCodec.FilterContext, Filter_VCodec.GetValue<string>()),
@@ -72,17 +68,30 @@ namespace fileCrawlerWPF.Controls
             };
         }
 
-        public void OnFilter(IReadOnlyCollection<ProbeFile> files, EventArgs e)
+        private void OnFilter(IReadOnlyCollection<ProbeFile> files)
         {
-            FilteredItems.Clear();
-
-            var contexts = GetFilterContexts();
-
-            var matches = _filterer.Filter(contexts, files);
-
-            foreach(var match in matches)
+            try
             {
-                FilteredItems.Add(match);
+                FilteredItems.Clear();
+
+                var contexts = GetFilterContexts();
+
+                var matches = _filterer.Filter(contexts, files);
+
+                foreach (var match in matches)
+                {
+                    FilteredItems.Add(match);
+                }
+            }
+            catch (OverflowException)
+            {
+                ResetView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Error scanning folder",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -99,10 +108,9 @@ namespace fileCrawlerWPF.Controls
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
-            // raise an event to request fresh media collection
-            RequestFilter?.Invoke(this, e);
-
+            OnFilter(MediaManager.RequestFilter());
         }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             // export results
@@ -112,6 +120,14 @@ namespace fileCrawlerWPF.Controls
         private void FilterOption_FilterToggled(object sender, FilterToggledEventArgs e)
         {
             _filterer.ToggleFilter(e.Context, e.IsEnabled);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = this;
+            comboFilterLevel.ItemsSource = Enum.GetValues(typeof(FilterLevel));
+            comboFilterLevel.DataContext = _filterer;
+
         }
     }
 }

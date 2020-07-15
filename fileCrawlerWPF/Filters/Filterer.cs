@@ -69,7 +69,6 @@ namespace fileCrawlerWPF.Filters
                         Level == FilterLevel.All
                         ? isMatch &= match
                         : isMatch |= match;
-
                 }
             }
 

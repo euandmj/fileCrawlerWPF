@@ -139,6 +139,7 @@
     <Compile Include="Filters\IFilterOption.cs" />
     <Compile Include="Filters\Filter.cs" />
     <Compile Include="Media\DirectoryAlreadyExistsException.cs" />
+    <Compile Include="Media\MediaManager.cs" />
     <Compile Include="Util\FileAliases.cs" />
     <Compile Include="Filters\FilterContext.cs" />
     <Compile Include="Filters\Filterer.cs" />
