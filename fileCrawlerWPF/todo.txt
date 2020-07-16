@@ -1,1 +1,3 @@
 ﻿render as treeview?
+hash progressbar cover textobx
+remove non media files

@@ -127,7 +127,6 @@ namespace fileCrawlerWPF.Controls
             DataContext = this;
             comboFilterLevel.ItemsSource = Enum.GetValues(typeof(FilterLevel));
             comboFilterLevel.DataContext = _filterer;
-
         }
     }
 }

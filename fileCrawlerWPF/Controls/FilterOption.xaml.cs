@@ -14,7 +14,6 @@ namespace fileCrawlerWPF.Controls
         : UserControl, IFilterOption
     {
         public event EventHandler<FilterToggledEventArgs> FilterToggled;
-       
 
         public FilterOption()
         {

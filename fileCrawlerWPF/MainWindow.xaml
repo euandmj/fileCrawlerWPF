@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:fileCrawlerWPF.Controls"
         x:Class="fileCrawlerWPF.MainWindow"
         mc:Ignorable="d"
-        Title="Media Filter 1.0"
+        Title="Media Filter 2.0"
         Height="800"
         Width="1200"
         MinHeight="600"

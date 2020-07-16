@@ -20,5 +20,6 @@ namespace fileCrawlerWPF.Events
             Context = ctx;
             IsEnabled = val;
         }
+
     }
 }

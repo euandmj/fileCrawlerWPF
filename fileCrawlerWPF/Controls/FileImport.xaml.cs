@@ -74,5 +74,10 @@ namespace fileCrawlerWPF.Controls
             if (SelectedItem is null) return;
             RemoveFile?.Invoke(this, new FileSelectedEventArgs(SelectedItem.Value.ID));
         }
+
+        private void Cull_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -47,6 +47,7 @@
                     FlowDirection="RightToLeft"
                     Grid.Row="0"
                     Grid.Column="3">
+            
 
             <Button x:Name="btnClear"
                     VerticalAlignment="Center"
@@ -56,6 +57,9 @@
                        Width="35"
                        Height="35" />
             </Button>
+
+            <Button Content="Remove Non Media"
+                    Click="Cull_Click" />
 
         </StackPanel>
 

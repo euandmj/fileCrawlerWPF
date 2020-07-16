@@ -1,4 +1,5 @@
 ﻿using fileCrawlerWPF.Events;
+using fileCrawlerWPF.Exceptions;
 using fileCrawlerWPF.Media;
 using System;
 using System.Diagnostics;
@@ -15,15 +16,16 @@ namespace fileCrawlerWPF
         {
             InitializeComponent();
 
-            ctlFileImport.FileSelected      += this.CtlFileImport_FileSelected;
-            ctlFileImport.PathSelected      += this.CtlFileImport_PathSelected;
-            ctlFileImport.Clear             += this.CtlFileImport_Clear;
-            ctlFileImport.RemoveFile        += this.CtlFileImport_RemoveFile;
-            ctlFilter.FileSelected          += this.CtlFilter_FileSelected;
-            ctlFilter.Clear                 += this.CtlFilter_Clear;
+            ctlFileImport.FileSelected  += this.CtlFileImport_FileSelected;
+            ctlFileImport.PathSelected  += this.CtlFileImport_PathSelected;
+            ctlFileImport.Clear         += this.CtlFileImport_Clear;
+            ctlFileImport.RemoveFile    += this.CtlFileImport_RemoveFile;
+
+            ctlFilter.FileSelected      += this.CtlFilter_FileSelected;
+            ctlFilter.Clear             += this.CtlFilter_Clear;
         }
 
-       
+
 
         #region Events
 
@@ -33,19 +35,20 @@ namespace fileCrawlerWPF
             {
                 MediaManager.MediaCollectionInstance.ProcessDirectory(e.Path);
             }
-            catch(DirectoryAlreadyExistsException ex)
+            catch (DirectoryAlreadyExistsException ex)
             {
-                MessageBox.Show($"The following directory already exists\n{ex.Directory}", 
-                    "Error scanning folder", 
+                MessageBox.Show($"The following directory already exists\n{ex.Directory}",
+                    "Error scanning folder",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, 
-                    "Error scanning folder", 
+                MessageBox.Show(ex.Message,
+                    "Error scanning folder",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         private void CtlFileImport_Clear(object sender, EventArgs e)
         {
             MediaManager.MediaCollectionInstance.Reset();
@@ -54,10 +57,11 @@ namespace fileCrawlerWPF
 
         private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            var f = MediaManager.MediaCollectionInstance.GetFileFromCache(e.Directory);
+            var f = MediaManager.MediaCollectionInstance.GetFile(e.Directory);
             if (f is null) throw new ArgumentNullException(nameof(e));
             All_FileInfo.SetFile(f);
         }
+
         private void CtlFileImport_RemoveFile(object sender, FileSelectedEventArgs e)
         {
             MediaManager.MediaCollectionInstance.RemoveFile(e.ID);
@@ -66,8 +70,8 @@ namespace fileCrawlerWPF
 
         private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            Filter_FileInfo.SetFile(MediaManager.MediaCollectionInstance.GetFileFromCache(e.ID));
-        }       
+            Filter_FileInfo.SetFile(MediaManager.MediaCollectionInstance.GetFile(e.ID));
+        }
 
         private void CtlFilter_Clear(object sender, EventArgs e)
         {
