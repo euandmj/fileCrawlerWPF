@@ -1,3 +1,4 @@
 ﻿render as treeview?
 hash progressbar cover textobx
 remove non media files
+save search/filter to disk

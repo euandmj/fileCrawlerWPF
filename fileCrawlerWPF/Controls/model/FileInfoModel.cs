@@ -5,7 +5,7 @@ using System.Windows.Media.Imaging;
 
 namespace fileCrawlerWPF.Controls.model
 {
-    class FileInfoModel
+    public class FileInfoModel
         : INotifyPropertyChanged
     {
         private ProbeFile _file;
@@ -15,6 +15,9 @@ namespace fileCrawlerWPF.Controls.model
         public FileInfoModel()
         {
         }
+
+        public FileInfoModel(ProbeFile pf)
+            => _file = pf;
 
         public ProbeFile ProbeFile
         {

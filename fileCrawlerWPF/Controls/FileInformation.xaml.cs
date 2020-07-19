@@ -24,6 +24,7 @@ namespace fileCrawlerWPF.Controls
 
         public void SetFile(ProbeFile f)
         {
+            //return;
             _viewModel.ProbeFile = f;
         }
 
@@ -73,7 +74,8 @@ namespace fileCrawlerWPF.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = _viewModel;
+            DataContext = this;
+            //DataContext = _viewModel;
         }
     }
 }

@@ -47,14 +47,14 @@
                 <StackPanel Orientation="Vertical">
                     <Label Content="File Name" />
                     <TextBox x:Name="txtFileName"
-                             Text="{Binding FileName, Mode=OneWay}"
+                             Text="{Binding FileName}"
                              Width="415"
                              Height="22" />
                 </StackPanel>
                 <StackPanel Orientation="Vertical">
                     <Label Content="Path" />
                     <TextBox x:Name="txtPath"
-                             Text="{Binding Directory, Mode=OneWay}"
+                             Text="{Binding Directory}"
                              Width="415"
                              Height="22" />
                 </StackPanel>
@@ -65,13 +65,13 @@
                         <TextBox x:Name="txtResolution"
                                  Width="100"
                                  Margin="0 0 5 0"
-                                 Text="{Binding Resolution, Mode=OneWay}"
+                                 Text="{Binding Resolution, Mode=TwoWay}"
                                  Height="22" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Frame Rate" />
                         <TextBox x:Name="txtFrameRate"
-                                 Text="{Binding FrameRate, Mode=OneWay}"
+                                 Text="{Binding FrameRate, Mode=TwoWay}"
                                  Width="100"
                                  Margin="0 0 5 0"
                                  Height="22" />
@@ -80,14 +80,14 @@
                         <Label Content="Video Codec" />
                         <TextBox x:Name="txtVCodec"
                                  Margin="0 0 5 0"
-                                 Text="{Binding VideoCodec, Mode=OneWay}"
+                                 Text="{Binding VideoCodec, Mode=TwoWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
                         <Label Content="Audio Codec" />
                         <TextBox x:Name="txtACodec"
-                                 Text="{Binding AudioCodec, Mode=OneWay}"
+                                 Text="{Binding AudioCodec, Mode=TwoWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
@@ -97,7 +97,7 @@
                     <StackPanel Orientation="Vertical">
                         <Label Content="File Size" />
                         <TextBox x:Name="txtFileSize"
-                                 Text="{Binding Size, Mode=OneWay}"
+                                 Text="{Binding Size, Mode=TwoWay}"
                                  Width="100"
                                  Height="22" />
                     </StackPanel>
@@ -115,7 +115,7 @@
                                                    DockPanel.Dock="Left"
                                                    HorizontalAlignment="Left"
                                                    IsReadOnly="True"
-                                                   Text="{Binding Hash, Mode=OneWay}"
+                                                   Text="{Binding Hash, Mode=TwoWay}"
                                                    Watermark="Click the icon to calculate this file's hash."
                                                    Width="225"
                                                    Height="22" />

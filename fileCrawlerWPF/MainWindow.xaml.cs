@@ -1,4 +1,6 @@
-﻿using fileCrawlerWPF.Events;
+﻿using fileCrawlerWPF.Controls;
+using fileCrawlerWPF.Controls.model;
+using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Exceptions;
 using fileCrawlerWPF.Media;
 using System;
@@ -26,8 +28,23 @@ namespace fileCrawlerWPF
         }
 
 
+        public FileInfoModel All_FileInfo_Model
+        {
+            get { return (FileInfoModel)GetValue(All_FileInfo_Property); }
+            set { SetValue(All_FileInfo_Property, value); }
+        }
 
-        #region Events
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty All_FileInfo_Property =
+            DependencyProperty.Register(nameof(All_FileInfo_Model), 
+                typeof(FileInfoModel), 
+                typeof(MainWindow), 
+                new PropertyMetadata(null));
+
+
+
+
+        #region Child Control Events
 
         private void CtlFileImport_PathSelected(object sender, PathSelectedEventArgs e)
         {
@@ -59,7 +76,10 @@ namespace fileCrawlerWPF
         {
             var f = MediaManager.MediaCollectionInstance.GetFile(e.Directory);
             if (f is null) throw new ArgumentNullException(nameof(e));
+            
             All_FileInfo.SetFile(f);
+            All_FileInfo_Model = new FileInfoModel(f);
+
         }
 
         private void CtlFileImport_RemoveFile(object sender, FileSelectedEventArgs e)
@@ -77,6 +97,7 @@ namespace fileCrawlerWPF
         {
             Filter_FileInfo.SetFile(null);
         }
+        #endregion
 
         private void MenuItemServerStatus_Click(object sender, RoutedEventArgs e)
         {
@@ -89,9 +110,9 @@ namespace fileCrawlerWPF
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            All_FileInfo.DataContext = All_FileInfo_Property;
             ctlFileImport.dgFiles.DataContext = MediaManager.MediaCollectionInstance.Directories;
         }
-        #endregion
 
 
     }
