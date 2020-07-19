@@ -74,8 +74,8 @@ namespace fileCrawlerWPF.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = this;
-            //DataContext = _viewModel;
+            //DataContext = this;
+            DataContext = _viewModel;
         }
     }
 }

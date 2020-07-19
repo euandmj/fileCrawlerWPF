@@ -36,15 +36,15 @@ namespace fileCrawlerWPF
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty All_FileInfo_Property =
-            DependencyProperty.Register(nameof(All_FileInfo_Model), 
-                typeof(FileInfoModel), 
-                typeof(MainWindow), 
+            DependencyProperty.Register(nameof(All_FileInfo_Model),
+                typeof(FileInfoModel),
+                typeof(MainWindow),
                 new PropertyMetadata(null));
 
 
 
 
-        #region Child Control Events
+        #region File Import Events
 
         private void CtlFileImport_PathSelected(object sender, PathSelectedEventArgs e)
         {
@@ -88,6 +88,10 @@ namespace fileCrawlerWPF
             All_FileInfo.SetFile(null);
         }
 
+        #endregion
+
+        #region Filter Control Events
+
         private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
             Filter_FileInfo.SetFile(MediaManager.MediaCollectionInstance.GetFile(e.ID));
@@ -110,8 +114,11 @@ namespace fileCrawlerWPF
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            All_FileInfo.DataContext = All_FileInfo_Property;
+            // set the data context for the file import control
             ctlFileImport.dgFiles.DataContext = MediaManager.MediaCollectionInstance.Directories;
+
+            // set the data context on the file import file info control
+            All_FileInfo.DataContext = All_FileInfo_Property;
         }
 
 
