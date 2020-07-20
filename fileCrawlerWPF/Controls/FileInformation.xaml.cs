@@ -1,5 +1,4 @@
 ﻿using fileCrawlerWPF.Controls.model;
-using fileCrawlerWPF.Media;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,46 +11,43 @@ namespace fileCrawlerWPF.Controls
     /// </summary>
     public partial class FileInformation : UserControl
     {
-        private readonly FileInfoModel _viewModel;
-
         public FileInformation()
         {
             InitializeComponent();
-            _viewModel = new FileInfoModel();
+            //ViewModel = new FileInformation_ViewModel();
             DataContextChanged += this.FileInformation_DataContextChanged;
-        }       
-           
-
-        public void SetFile(ProbeFile f)
-        {
-            //return;
-            _viewModel.ProbeFile = f;
         }
+
+        public readonly FileInformation_ViewModel Model = new FileInformation_ViewModel();
+
+        //public FileInformation_ViewModel ViewModel
+        //{
+        //    get { return (FileInformation_ViewModel)GetValue(ViewModelProperty); }
+        //    set { SetValue(ViewModelProperty, value); }
+        //}
+
+        //public static readonly DependencyProperty ViewModelProperty =
+        //    DependencyProperty.Register(
+        //        nameof(ViewModel),
+        //        typeof(FileInformation_ViewModel),
+        //        typeof(FileInformation),
+        //        new PropertyMetadata(null));
 
         private async void imgHashCalculate_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            byte[] hash = null;
-            var file = _viewModel.ProbeFile;
-
             try
             {
                 progresBar.Visibility = Visibility.Visible;
                 imgHashCalculate.IsEnabled = false;
 
-                hash = await file.ComputeHashAsync();
+                await Model.CalculateHash();
             }
             catch (Exception)
             {
-                MessageBox.Show($"Unable to calculate hash for file {_viewModel.FileName}");
+                MessageBox.Show($"Unable to calculate hash for file {Model.FileName}");
             }
             finally
             {
-                //file.Hash ??= hash;
-                if (_viewModel.ID == file.ID)
-                    _viewModel.SetHash(hash);
-                else
-                    file.Hash = hash;
-
                 progresBar.Visibility = Visibility.Collapsed;
                 imgHashCalculate.IsEnabled = true;
             }
@@ -59,12 +55,12 @@ namespace fileCrawlerWPF.Controls
 
         private void btnOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.ProbeFile.OpenFile();
+            Model.ProbeFile.OpenFile();
         }
 
         private void btnOpenFolder_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel.ProbeFile.OpenFolder();
+            Model.ProbeFile.OpenFolder();
         }
 
         private void FileInformation_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -75,7 +71,7 @@ namespace fileCrawlerWPF.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //DataContext = this;
-            DataContext = _viewModel;
+            DataContext = Model;
         }
     }
 }

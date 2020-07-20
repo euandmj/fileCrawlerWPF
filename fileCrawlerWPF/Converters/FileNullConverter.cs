@@ -12,7 +12,7 @@ namespace fileCrawlerWPF.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var file = value as FileInfoModel;
+            var file = value as FileInformation_ViewModel;
 
             return !(file == null);
         }

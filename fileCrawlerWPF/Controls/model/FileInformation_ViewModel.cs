@@ -1,22 +1,24 @@
 ﻿using fileCrawlerWPF.Media;
 using System;
+using System.CodeDom;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace fileCrawlerWPF.Controls.model
 {
-    public class FileInfoModel
+    public class FileInformation_ViewModel
         : INotifyPropertyChanged
     {
         private ProbeFile _file;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public FileInfoModel()
+        public FileInformation_ViewModel()
         {
         }
 
-        public FileInfoModel(ProbeFile pf)
+        public FileInformation_ViewModel(ProbeFile pf)
             => _file = pf;
 
         public ProbeFile ProbeFile
@@ -25,6 +27,11 @@ namespace fileCrawlerWPF.Controls.model
             set
             {
                 _file = value;
+
+                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileInformation_ViewModel)));
+
+                //foreach())
+
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Enabled)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Resolution)));
@@ -38,15 +45,15 @@ namespace fileCrawlerWPF.Controls.model
             }
         }
 
-        public void SetHash(byte[] hash)
+        public async Task CalculateHash()
         {
-            _file.Hash = hash;
+            await _file?.ComputeHashAsync();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Hash)));
         }
 
-        public bool Enabled => !(_file is null);
+        public bool Enabled => _file != null;
         public Guid ID => _file.ID;
-        public string FileName => _file?.Name;
+        public string FileName => _file?.Name;                    
         public string Resolution => _file?.Resolution;
         public string Directory => _file?.Directory;
         public string FrameRate => $"{_file?.FrameRate}";
@@ -56,12 +63,19 @@ namespace fileCrawlerWPF.Controls.model
         public string Hash => _file?.HashAsHex;
         public BitmapSource Image => _file?.GetThumbnail();
 
-
-
-        public static bool operator == (FileInfoModel left, FileInfoModel right)
+        public static bool operator == (FileInformation_ViewModel left, FileInformation_ViewModel right)
             => left?._file == right?._file;
-        public static bool operator !=(FileInfoModel left, FileInfoModel right)
+        public static bool operator !=(FileInformation_ViewModel left, FileInformation_ViewModel right)
             => left?._file != right?._file;
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

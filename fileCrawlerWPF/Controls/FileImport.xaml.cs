@@ -79,5 +79,10 @@ namespace fileCrawlerWPF.Controls
         {
 
         }
+
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DataContext = MediaManager.MediaCollectionInstance.Directories;
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using fileCrawlerWPF.Controls;
-using fileCrawlerWPF.Controls.model;
+﻿using fileCrawlerWPF.Controls.model;
 using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Exceptions;
 using fileCrawlerWPF.Media;
@@ -13,33 +12,19 @@ namespace fileCrawlerWPF
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
+	{
+		public MainWindow()
+		{
+			InitializeComponent();
 
-            ctlFileImport.FileSelected  += this.CtlFileImport_FileSelected;
-            ctlFileImport.PathSelected  += this.CtlFileImport_PathSelected;
-            ctlFileImport.Clear         += this.CtlFileImport_Clear;
-            ctlFileImport.RemoveFile    += this.CtlFileImport_RemoveFile;
+			ctlFileImport.FileSelected += this.CtlFileImport_FileSelected;
+			ctlFileImport.PathSelected += this.CtlFileImport_PathSelected;
+			ctlFileImport.Clear += this.CtlFileImport_Clear;
+			ctlFileImport.RemoveFile += this.CtlFileImport_RemoveFile;
 
-            ctlFilter.FileSelected      += this.CtlFilter_FileSelected;
-            ctlFilter.Clear             += this.CtlFilter_Clear;
-        }
-
-
-        public FileInfoModel All_FileInfo_Model
-        {
-            get { return (FileInfoModel)GetValue(All_FileInfo_Property); }
-            set { SetValue(All_FileInfo_Property, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty All_FileInfo_Property =
-            DependencyProperty.Register(nameof(All_FileInfo_Model),
-                typeof(FileInfoModel),
-                typeof(MainWindow),
-                new PropertyMetadata(null));
+			ctlFilter.FileSelected += this.CtlFilter_FileSelected;
+			ctlFilter.Clear += this.CtlFilter_Clear;
+		}
 
 
 
@@ -69,23 +54,27 @@ namespace fileCrawlerWPF
         private void CtlFileImport_Clear(object sender, EventArgs e)
         {
             MediaManager.MediaCollectionInstance.Reset();
-            All_FileInfo.SetFile(null);
+            All_FileInfo.Model.ProbeFile = null;
         }
 
         private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
         {
             var f = MediaManager.MediaCollectionInstance.GetFile(e.Directory);
-            if (f is null) throw new ArgumentNullException(nameof(e));
-            
-            All_FileInfo.SetFile(f);
-            All_FileInfo_Model = new FileInfoModel(f);
+            //if (f is null) throw new ArgumentNullException(nameof(e));
+
+            //All_FileInfo.PreviewedFile = new FileInformation_ViewModel(f);
+            All_FileInfo.Model.ProbeFile = f;
+
+            //var binding = GetBindingExpression(Filter_FileInfo_Property);
+            //All_FileInfo_Model = new FileInfoModel(f);
+
 
         }
 
         private void CtlFileImport_RemoveFile(object sender, FileSelectedEventArgs e)
         {
             MediaManager.MediaCollectionInstance.RemoveFile(e.ID);
-            All_FileInfo.SetFile(null);
+            All_FileInfo.Model.ProbeFile = null;
         }
 
         #endregion
@@ -94,12 +83,12 @@ namespace fileCrawlerWPF
 
         private void CtlFilter_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            Filter_FileInfo.SetFile(MediaManager.MediaCollectionInstance.GetFile(e.ID));
+            Filter_FileInfo.Model.ProbeFile = MediaManager.MediaCollectionInstance.GetFile(e.ID);
         }
 
         private void CtlFilter_Clear(object sender, EventArgs e)
         {
-            Filter_FileInfo.SetFile(null);
+            Filter_FileInfo.Model.ProbeFile = null;
         }
         #endregion
 
@@ -115,10 +104,12 @@ namespace fileCrawlerWPF
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // set the data context for the file import control
-            ctlFileImport.dgFiles.DataContext = MediaManager.MediaCollectionInstance.Directories;
+            //ctlFileImport.dgFiles.DataContext = MediaManager.MediaCollectionInstance.Directories;
 
             // set the data context on the file import file info control
-            All_FileInfo.DataContext = All_FileInfo_Property;
+            //All_FileInfo.DataContext = All_FileInfo_Property;
+
+            //Filter_FileInfo.DataContext = Filter_FileInfo_Property;
         }
 
 

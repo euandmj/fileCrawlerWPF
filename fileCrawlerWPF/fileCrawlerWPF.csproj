@@ -127,7 +127,7 @@
     <Compile Include="Controls\FilterOptionRichTextBox.xaml.cs">
       <DependentUpon>FilterOptionRichTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\model\FileInfoModel.cs" />
+    <Compile Include="Controls\model\FileInformation_ViewModel.cs" />
     <Compile Include="Converters\FileNullConverter.cs" />
     <Compile Include="Converters\FilterLevelConverter.cs" />
     <Compile Include="Events\DirectorySelectedEventArgs.cs" />

@@ -120,12 +120,12 @@ namespace fileCrawlerWPF.Media
             _thumbnail = BitmapToBitmapImage(bmp);
         }
 
-        public async Task<byte[]> ComputeHashAsync()
+        public async Task ComputeHashAsync()
         {
             using (var md5 = MD5.Create())
             using (var stream = File.OpenRead(Path))
             {
-                return await Task.Run(() =>
+                this.Hash = await Task.Run(() =>
                 {
                     return md5.ComputeHash(stream);
                 });
