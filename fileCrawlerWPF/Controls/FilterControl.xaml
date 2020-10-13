@@ -99,7 +99,7 @@
 
                 <local:FilterOptionRichTextBox x:Name="Filter_Name"
                                                FilterName="Name"
-                                               FilterContext="Regex"
+                                               FilterContext="Name"
                                                Grid.Row="1"
                                                Grid.Column="1"
                                                FilterToggled="FilterOption_FilterToggled">

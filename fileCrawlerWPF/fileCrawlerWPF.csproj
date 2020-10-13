@@ -124,6 +124,7 @@
     <Compile Include="Controls\FilterOption.xaml.cs">
       <DependentUpon>FilterOption.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FilterOptionBase.cs" />
     <Compile Include="Controls\FilterOptionRichTextBox.xaml.cs">
       <DependentUpon>FilterOptionRichTextBox.xaml</DependentUpon>
     </Compile>

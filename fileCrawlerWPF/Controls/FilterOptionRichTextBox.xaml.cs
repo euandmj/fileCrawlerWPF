@@ -34,19 +34,12 @@ namespace fileCrawlerWPF.Controls
             CheckChanged(null, null);
         }
 
-        public string GetValue()
+        public T GetValue<T>() 
         {
-            if (string.IsNullOrWhiteSpace(Value))
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return Value;
-            }
+            return string.IsNullOrWhiteSpace(Value)
+                ? (T)Convert.ChangeType(string.Empty, typeof(T))
+                : (T)Convert.ChangeType(Value, typeof(T));
         }
-
-        public T GetValue<T>() { throw new NotImplementedException("string default of null wasnt what i wanted"); }
 
         private void ValidateInput(object sender, TextCompositionEventArgs e)
         {

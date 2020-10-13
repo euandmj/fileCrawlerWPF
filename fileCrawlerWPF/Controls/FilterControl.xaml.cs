@@ -29,7 +29,6 @@ namespace fileCrawlerWPF.Controls
 
         public ObservableCollection<ProbeFile> FilteredItems { get; set; }
 
-
         public ProbeFile SelectedItem
         {
             get
@@ -63,7 +62,8 @@ namespace fileCrawlerWPF.Controls
                 (Filter_Frames.FilterContext, Filter_Frames.GetValue<int>()),
                 (Filter_VCodec.FilterContext, Filter_VCodec.GetValue<string>()),
                 (Filter_ACodec.FilterContext, Filter_ACodec.GetValue<string>()),
-                (Filter_Name.FilterContext, Filter_Name.GetValue()),
+                (Filter_Name.FilterContext, Filter_Name.GetValue<string>()),
+                (Filter_Regex.FilterContext, Filter_Regex.GetValue<string>()),
                 (Filter_Extension.FilterContext, Filter_Extension.GetValue<string>())
             };
         }

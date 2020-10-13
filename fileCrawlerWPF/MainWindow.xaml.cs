@@ -1,5 +1,4 @@
-﻿using fileCrawlerWPF.Controls.model;
-using fileCrawlerWPF.Events;
+﻿using fileCrawlerWPF.Events;
 using fileCrawlerWPF.Exceptions;
 using fileCrawlerWPF.Media;
 using System;
@@ -59,14 +58,18 @@ namespace fileCrawlerWPF
 
         private void CtlFileImport_FileSelected(object sender, FileSelectedEventArgs e)
         {
-            var f = MediaManager.MediaCollectionInstance.GetFile(e.Directory);
-            //if (f is null) throw new ArgumentNullException(nameof(e));
+            try
+            {
+                var f = MediaManager.MediaCollectionInstance.GetFile(e.Directory);
 
-            //All_FileInfo.PreviewedFile = new FileInformation_ViewModel(f);
-            All_FileInfo.Model.ProbeFile = f;
+                All_FileInfo.Model.ProbeFile = f;
 
-            //var binding = GetBindingExpression(Filter_FileInfo_Property);
-            //All_FileInfo_Model = new FileInfoModel(f);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message,
+                    "Error viewing file", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
 
         }

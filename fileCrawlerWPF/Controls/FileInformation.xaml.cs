@@ -14,11 +14,11 @@ namespace fileCrawlerWPF.Controls
         public FileInformation()
         {
             InitializeComponent();
-            //ViewModel = new FileInformation_ViewModel();
+            Model = new FileInformation_ViewModel();
             DataContextChanged += this.FileInformation_DataContextChanged;
         }
 
-        public readonly FileInformation_ViewModel Model = new FileInformation_ViewModel();
+        public readonly FileInformation_ViewModel Model;
 
         //public FileInformation_ViewModel ViewModel
         //{
@@ -70,7 +70,6 @@ namespace fileCrawlerWPF.Controls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //DataContext = this;
             DataContext = Model;
         }
     }

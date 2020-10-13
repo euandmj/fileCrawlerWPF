@@ -1,6 +1,5 @@
 ﻿using fileCrawlerWPF.Media;
 using System;
-using System.CodeDom;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -27,10 +26,6 @@ namespace fileCrawlerWPF.Controls.model
             set
             {
                 _file = value;
-
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileInformation_ViewModel)));
-
-                //foreach())
 
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Enabled)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FileName)));
